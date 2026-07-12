@@ -1,26 +1,120 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
+
+  /* Brand palette — derived from the Imbas isotipo */
+  --color-brand-teal: #00988b;
+  --color-brand-mint: #2fbfae;
+  --color-brand-glow: #00ffcc;
+  --color-brand-purple: #2d1838;
+  --color-brand-ink: #33203f;      /* logo's dark aubergine */
+  --color-brand-lilac: #b9a7d6;    /* logo ink translated for dark bg */
+  --color-brand-deep: #060210;     /* deepest background */
+  --color-brand-dark: #120917;
+  --color-brand-light: #f4f6f8;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: var(--color-brand-deep);
+  --foreground: var(--color-brand-light);
+  --ease-premium: cubic-bezier(0.65, 0.05, 0, 1);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), sans-serif;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+}
+
+/* ===== Liquid glass surfaces ===== */
+@utility glass {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.03) 40%,
+    rgba(0, 152, 139, 0.04) 100%
+  );
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 20px 50px -20px rgba(0, 0, 0, 0.6);
+}
+
+@utility glass-teal {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 152, 139, 0.16) 0%,
+    rgba(0, 152, 139, 0.05) 60%,
+    rgba(0, 255, 204, 0.04) 100%
+  );
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border: 1px solid rgba(0, 255, 204, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(0, 255, 204, 0.15),
+    0 20px 50px -20px rgba(0, 0, 0, 0.6);
+}
+
+/* Fine grain to kill banding on large glows */
+@utility grain {
+  position: relative;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* Sheen sweep used on glass panels */
+@utility sheen {
+  position: relative;
+  overflow: hidden;
+}
+.sheen::before {
+  content: "";
+  position: absolute;
+  inset: -150% -60%;
+  transform: translateX(-70%) rotate(20deg);
+  background: linear-gradient(
+    100deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.07) 48%,
+    rgba(0, 255, 204, 0.1) 50%,
+    rgba(255, 255, 255, 0.07) 52%,
+    transparent 58%
+  );
+  pointer-events: none;
+}
+
+@keyframes scroll-cue {
+  0% { transform: scaleY(0); transform-origin: top; }
+  45% { transform: scaleY(1); transform-origin: top; }
+  55% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* Hide scrollbar for cleaner look */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-brand-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-brand-purple);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand-teal);
 }
