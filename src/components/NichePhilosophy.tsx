@@ -3,7 +3,9 @@
 import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { useGSAP } from "@gsap/react";
+import { useDict } from "@/lib/i18n/LocaleProvider";
 import {
   BarChart3,
   Database,
@@ -19,7 +21,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 /**
  * Zone 2 — the Imbas tree, built on the exact geometry of the isotipo:
@@ -30,38 +32,12 @@ gsap.registerPlugin(ScrollTrigger);
  * camera move while the three narrative phases crossfade around it.
  */
 
-const rootServices = [
-  { icon: Zap, title: "Web & Mobile Apps", desc: "Native iOS/Android and PWA." },
-  { icon: Server, title: "Cloud Infrastructure", desc: "Scalable architectures." },
-  { icon: ShieldCheck, title: "AI Security", desc: "Enterprise data leak protection." },
-  { icon: Network, title: "Multi-Agent Systems", desc: "Integrating disparate models." },
-  { icon: ArrowRight, title: "Legacy Modernization", desc: "AI-First system upgrades." },
-  { icon: Workflow, title: "Data Pipelines", desc: "Solving bottlenecks & latency." },
-];
+/* Icons for the root feature cards and trunk pillars — copy lives in the i18n dictionaries */
+const rootIcons = [Zap, Server, ShieldCheck, Network, ArrowRight, Workflow];
+const pillarIcons = [Database, ShieldAlert, ServerCog];
 
-const trunkPillars = [
-  {
-    index: "01",
-    icon: Database,
-    title: "Migración de Datos",
-    desc: "Transiciones seguras, sin pérdida de información y con integridad garantizada para sistemas de misión crítica.",
-    chips: ["Zero downtime", "Integridad total"],
-  },
-  {
-    index: "02",
-    icon: ShieldAlert,
-    title: "Guard Rails para IA",
-    desc: "Políticas estrictas y barreras de seguridad para que los modelos operen dentro de parámetros corporativos.",
-    chips: ["Compliance", "Auditable"],
-  },
-  {
-    index: "03",
-    icon: ServerCog,
-    title: "Integración Legacy",
-    desc: "Conectamos infraestructuras antiguas con procesos AI-First sin interrumpir la operación del negocio.",
-    chips: ["SLA 99.99%", "Sin fricción"],
-  },
-];
+/* Timeline moments (seconds) where each phase rests fully assembled — targets for rail navigation */
+const PHASE_TIMES = [2.7, 5.35, 8.1];
 
 /* Positions for the root feature cards along the fan (desktop) */
 const rootCardPos = [
@@ -74,12 +50,25 @@ const rootCardPos = [
 ] as const;
 
 export default function NichePhilosophy() {
+  const t = useDict();
   const containerRef = useRef<HTMLDivElement>(null);
   const spineRef = useRef<HTMLDivElement>(null);
   const crownGroupRef = useRef<SVGGElement>(null);
   const phaseARef = useRef<HTMLDivElement>(null);
   const phaseBRef = useRef<HTMLDivElement>(null);
   const phaseCRef = useRef<HTMLDivElement>(null);
+
+  // Pinned timeline handles, used by the rail navigation
+  const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const stRef = useRef<ScrollTrigger | null>(null);
+
+  const goToPhase = (i: number) => {
+    const tl = tlRef.current;
+    const st = stRef.current;
+    if (!tl || !st) return;
+    const y = st.start + (PHASE_TIMES[i] / tl.duration()) * (st.end - st.start);
+    gsap.to(window, { scrollTo: { y }, duration: 1.4, ease: "power2.inOut", overwrite: "auto" });
+  };
 
   useGSAP(
     () => {
@@ -131,6 +120,8 @@ export default function NichePhilosophy() {
           pin: true,
         },
       });
+      tlRef.current = tl;
+      stRef.current = tl.scrollTrigger ?? null;
 
       /* ===== PHASE A — THE CROWN (leaves / adaptive UX) ===== */
       tl.to(".trunk-top", { strokeDashoffset: 0, duration: 0.7, ease: "power1.inOut" }, 0);
@@ -292,6 +283,11 @@ export default function NichePhilosophy() {
         transformOrigin: "center center",
       });
 
+      return () => {
+        tlRef.current = null;
+        stRef.current = null;
+      };
+
       });
 
       // ================= MOBILE: natural flow, reveal on approach =================
@@ -328,7 +324,7 @@ export default function NichePhilosophy() {
       {/* ================= THE TREE SPINE (logo geometry, 3 bands) ================= */}
       <div
         ref={spineRef}
-        className="hidden md:block absolute inset-x-0 top-0 mx-auto w-full max-w-[680px] pointer-events-none z-[5]"
+        className="hidden md:block absolute inset-x-0 top-0 mx-auto w-full max-w-[680px] pointer-events-none z-[5] opacity-55"
         style={{ height: "300%" }}
       >
         {/* Band 1: crown — its own SVG so no single layer exceeds GPU texture limits */}
@@ -502,30 +498,34 @@ export default function NichePhilosophy() {
         </svg>
       </div>
 
-      {/* ================= PROGRESS RAIL ================= */}
+      {/* ================= PROGRESS RAIL (clickable phase navigation) ================= */}
       <div className="hidden md:flex absolute left-8 top-1/2 -translate-y-1/2 z-40 flex-col items-start gap-0">
         <div className="relative flex flex-col gap-14 pl-5">
           {/* Track + fill */}
           <div className="absolute left-0 top-1 bottom-1 w-px bg-white/10" />
           <div className="rail-fill absolute left-0 top-1 bottom-1 w-px bg-gradient-to-b from-brand-glow to-brand-teal" />
 
-          {[
-            { n: "01", label: "Las hojas" },
-            { n: "02", label: "El tronco" },
-            { n: "03", label: "Las raíces" },
-          ].map((item, i) => (
-            <div key={item.n} className="relative flex items-center gap-3">
+          {t.niche.rail.map((label, i) => (
+            <button
+              key={label}
+              type="button"
+              onClick={() => goToPhase(i)}
+              aria-label={label}
+              className="group relative flex items-center gap-3 text-left cursor-pointer"
+            >
               <span
-                className={`rail-dot-${i + 1} absolute -left-[22px] w-2 h-2 rounded-full`}
+                className={`rail-dot-${i + 1} absolute -left-[22px] w-2 h-2 rounded-full transition-transform duration-300 group-hover:scale-150`}
                 style={{ backgroundColor: "rgba(0,152,139,0.6)" }}
               />
-              <div className="flex flex-col">
-                <span className="text-[10px] font-mono text-brand-teal/60">{item.n}</span>
-                <span className={`rail-label-${i + 1} text-xs font-medium tracking-wide text-gray-500`}>
-                  {item.label}
+              <span className="flex flex-col">
+                <span className="text-[10px] font-mono text-brand-teal/60">{`0${i + 1}`}</span>
+                <span
+                  className={`rail-label-${i + 1} text-xs font-medium tracking-wide text-gray-500 transition-colors duration-300 group-hover:text-brand-glow`}
+                >
+                  {label}
                 </span>
-              </div>
-            </div>
+              </span>
+            </button>
           ))}
         </div>
       </div>
@@ -537,10 +537,10 @@ export default function NichePhilosophy() {
       >
         <div className="pa-title text-center mb-10 md:mb-0 md:absolute md:top-[6%] w-full px-6">
           <p className="text-xs font-mono uppercase tracking-[0.35em] text-brand-mint mb-3">
-            Fase 01 · Las hojas
+            {t.niche.phaseA.eyebrow}
           </p>
           <h2 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-brand-glow">
-            Experiencias Autoadaptativas
+            {t.niche.phaseA.title}
           </h2>
         </div>
 
@@ -550,9 +550,9 @@ export default function NichePhilosophy() {
             <MessageSquare className="w-5 h-5 text-brand-glow mt-1 flex-shrink-0" />
             <div>
               <p className="text-sm font-medium text-white leading-relaxed">
-                “Quiero un reporte de ventas del último mes, comparado con el año anterior.”
+                {t.niche.phaseA.chat1}
               </p>
-              <span className="block mt-2 text-[10px] font-mono text-gray-500">09:41 · CEO</span>
+              <span className="block mt-2 text-[10px] font-mono text-gray-500">{t.niche.phaseA.chat1Meta}</span>
             </div>
             {/* Connector to the branch */}
             <span className="hidden md:block absolute -bottom-px -right-6 w-6 h-px bg-gradient-to-r from-brand-glow/50 to-transparent" />
@@ -563,11 +563,11 @@ export default function NichePhilosophy() {
             <div className="flex items-center justify-between gap-3 mb-5">
               <div className="flex items-center gap-2">
                 <BarChart3 className="w-5 h-5 text-brand-glow" />
-                <span className="text-sm font-medium tracking-wider text-gray-300">Ventas (YoY)</span>
+                <span className="text-sm font-medium tracking-wider text-gray-300">{t.niche.phaseA.dashTitle}</span>
               </div>
               <div className="flex items-center gap-2 px-2.5 py-1 rounded-full border border-brand-glow/25 bg-brand-glow/5">
                 <span className="w-1.5 h-1.5 rounded-full bg-brand-glow animate-pulse" />
-                <span className="text-[9px] font-mono tracking-widest text-brand-glow/80">ADAPTIVE</span>
+                <span className="text-[9px] font-mono tracking-widest text-brand-glow/80">{t.niche.phaseA.adaptiveBadge}</span>
               </div>
             </div>
             <div className="h-36 border-b border-white/10 flex items-end justify-between gap-2.5 pb-0">
@@ -581,11 +581,13 @@ export default function NichePhilosophy() {
               ))}
             </div>
             <div className="flex justify-between mt-2 text-[10px] text-gray-500 font-mono">
-              <span>Ene</span><span>Feb</span><span>Mar</span><span>Abr</span><span>May</span><span>Jun</span>
+              {t.niche.phaseA.months.map((m) => (
+                <span key={m}>{m}</span>
+              ))}
             </div>
             <div className="adapt-badge mt-4 flex items-center gap-2 text-[11px] text-brand-mint font-mono">
               <CheckCircle2 className="w-3.5 h-3.5" />
-              Panel reorganizado según tus preferencias
+              {t.niche.phaseA.adaptedNote}
             </div>
           </div>
 
@@ -593,7 +595,7 @@ export default function NichePhilosophy() {
           <div className="pa-item pa-item-3 md:absolute md:bottom-[4%] md:left-[12%] lg:left-[16%] glass-teal rounded-2xl rounded-br-sm p-4 max-w-xs flex items-start gap-3">
             <CheckCircle2 className="w-5 h-5 text-brand-glow mt-1 flex-shrink-0" />
             <p className="text-sm font-medium text-white leading-relaxed">
-              ¡Reporte generado! He adaptado el panel a tus preferencias de visualización.
+              {t.niche.phaseA.chat2}
             </p>
             <span className="hidden md:block absolute -top-px -right-6 w-6 h-px bg-gradient-to-r from-brand-glow/50 to-transparent" />
           </div>
@@ -607,18 +609,18 @@ export default function NichePhilosophy() {
       >
         <div className="pb-title text-center mb-10 md:mb-0 md:absolute md:top-[6%] w-full px-6">
           <p className="text-xs font-mono uppercase tracking-[0.35em] text-brand-mint mb-3">
-            Fase 02 · El tronco
+            {t.niche.phaseB.eyebrow}
           </p>
           <h2 className="text-3xl md:text-5xl font-extrabold uppercase tracking-tight text-white">
-            Confianza Empresarial
+            {t.niche.phaseB.title}
           </h2>
           <p className="text-base md:text-lg text-gray-400 font-medium max-w-2xl mx-auto mt-3">
-            Cimientos sólidos para entornos corporativos exigentes.
+            {t.niche.phaseB.sub}
           </p>
         </div>
 
         <div className="relative w-full max-w-6xl mt-0 md:mt-16 flex flex-col gap-5 md:block md:h-[58vh]">
-          {trunkPillars.map((pillar, i) => {
+          {t.niche.phaseB.pillars.map((pillar, i) => {
             const fromLeft = i !== 1;
             const pos =
               i === 0
@@ -626,10 +628,10 @@ export default function NichePhilosophy() {
                 : i === 1
                 ? "md:absolute md:top-[34%] md:right-[2%] lg:right-[6%]"
                 : "md:absolute md:top-[66%] md:left-[2%] lg:left-[6%]";
-            const Icon = pillar.icon;
+            const Icon = pillarIcons[i];
             return (
               <div
-                key={pillar.index}
+                key={pillar.title}
                 className={`pb-card pb-card-${i + 1} ${fromLeft ? "from-left" : "from-right"} ${pos} w-full max-w-sm bg-[#0c0714]/90 border border-white/10 rounded-md p-6 relative overflow-hidden`}
               >
                 {/* Machined top hairline */}
@@ -638,7 +640,7 @@ export default function NichePhilosophy() {
                   <div className="w-11 h-11 rounded-sm bg-brand-teal/10 border border-brand-teal/30 flex items-center justify-center">
                     <Icon className="w-5 h-5 text-brand-mint" />
                   </div>
-                  <span className="text-2xl font-mono font-bold text-white/10">{pillar.index}</span>
+                  <span className="text-2xl font-mono font-bold text-white/10">{`0${i + 1}`}</span>
                 </div>
                 <h3 className="text-xl font-bold mb-2 tracking-tight">{pillar.title}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed mb-4">{pillar.desc}</p>
@@ -662,19 +664,19 @@ export default function NichePhilosophy() {
       <div ref={phaseCRef} className="relative py-24 md:py-0 md:absolute md:inset-0 w-full md:h-full z-10">
         <div className="pc-title text-center mb-10 md:mb-0 md:absolute md:top-[5%] w-full px-6 z-20">
           <p className="text-xs font-mono uppercase tracking-[0.35em] text-brand-mint mb-3">
-            Fase 03 · Las raíces
+            {t.niche.phaseC.eyebrow}
           </p>
           <h2 className="text-2xl md:text-4xl font-bold text-white">
-            Profundidad Tecnológica
+            {t.niche.phaseC.title}
           </h2>
         </div>
 
         {/* Mobile: simple grid; Desktop: cards along the root fan */}
         <div className="relative w-full md:h-full max-w-6xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 gap-6 content-center md:block">
-          {rootServices.map((service, idx) => {
+          {t.niche.phaseC.services.map((service, idx) => {
             const pos = rootCardPos[idx];
             const isLeft = pos.side === "left";
-            const Icon = service.icon;
+            const Icon = rootIcons[idx];
             return (
               <div
                 key={service.title}
@@ -702,7 +704,7 @@ export default function NichePhilosophy() {
 
         <div className="pc-caption mt-10 md:mt-0 md:absolute md:bottom-[5%] w-full text-center px-6">
           <p className="text-sm font-mono text-brand-mint/70 tracking-widest uppercase">
-            Un solo núcleo · Infinitas ramas
+            {t.niche.phaseC.caption}
           </p>
         </div>
       </div>

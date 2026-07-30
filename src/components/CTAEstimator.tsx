@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { ChevronRight, CheckCircle2 } from "lucide-react";
+import { useDict } from "@/lib/i18n/LocaleProvider";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,6 +13,7 @@ type ProjectType = "Mobile App" | "AI-First Core" | "Self-Adaptive Web" | null;
 type ScopeLevel = "MVP" | "Growth" | "Enterprise" | null;
 
 export default function CTAEstimator() {
+  const t = useDict();
   const containerRef = useRef<HTMLDivElement>(null);
   
   const [projectType, setProjectType] = useState<ProjectType>(null);
@@ -57,10 +59,10 @@ export default function CTAEstimator() {
         
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
-            Initiate Your Architecture
+            {t.cta.title}
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            Define your scope and receive an instant structural estimation. <span className="text-brand-teal font-medium">This tool is completely free of charge</span>, so feel free to explore different options and discover what we can build for you.
+            {t.cta.introLead}<span className="text-brand-teal font-medium">{t.cta.introFree}</span>{t.cta.introTail}
           </p>
         </div>
 
@@ -72,7 +74,7 @@ export default function CTAEstimator() {
           {/* STEP 1 */}
           {step === 1 && (
             <div className="animate-in fade-in slide-in-from-right-8 duration-500">
-              <h3 className="text-2xl font-semibold text-white mb-6">1. Select Project Type</h3>
+              <h3 className="text-2xl font-semibold text-white mb-6">{t.cta.step1Title}</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {["Mobile App", "AI-First Core", "Self-Adaptive Web"].map((type) => (
                   <button
@@ -85,7 +87,7 @@ export default function CTAEstimator() {
                       <span className="font-semibold text-white">{type}</span>
                       {projectType === type && <CheckCircle2 className="w-5 h-5 text-brand-teal" />}
                     </div>
-                    <p className="text-sm text-gray-500">Intelligent foundations for next-gen products.</p>
+                    <p className="text-sm text-gray-500">{t.cta.typeDesc}</p>
                   </button>
                 ))}
               </div>
@@ -96,7 +98,7 @@ export default function CTAEstimator() {
                   className="px-8 py-3 bg-brand-teal text-white rounded-full font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-brand-teal/80 transition-colors flex items-center gap-2"
                   data-magnetic
                 >
-                  Continue <ChevronRight className="w-4 h-4" />
+                  {t.cta.continue} <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -105,8 +107,8 @@ export default function CTAEstimator() {
           {/* STEP 2 */}
           {step === 2 && (
             <div className="animate-in fade-in slide-in-from-right-8 duration-500">
-              <button onClick={() => setStep(1)} className="text-brand-teal text-sm mb-4 hover:underline">← Back</button>
-              <h3 className="text-2xl font-semibold text-white mb-6">2. Define Scope Level</h3>
+              <button onClick={() => setStep(1)} className="text-brand-teal text-sm mb-4 hover:underline">{t.cta.back}</button>
+              <h3 className="text-2xl font-semibold text-white mb-6">{t.cta.step2Title}</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {["MVP", "Growth", "Enterprise"].map((level) => (
                   <button
@@ -120,7 +122,7 @@ export default function CTAEstimator() {
                       {scope === level && <CheckCircle2 className="w-5 h-5 text-brand-teal" />}
                     </div>
                     <p className="text-sm text-gray-500">
-                      {level === "MVP" ? "Core features to validate market fit." : level === "Growth" ? "Scalable architecture for expanding user base." : "Mission-critical, high-availability systems."}
+                      {level === "MVP" ? t.cta.scopeDesc.mvp : level === "Growth" ? t.cta.scopeDesc.growth : t.cta.scopeDesc.enterprise}
                     </p>
                   </button>
                 ))}
@@ -132,7 +134,7 @@ export default function CTAEstimator() {
                   className="px-8 py-3 bg-brand-teal text-white rounded-full font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-brand-teal/80 transition-colors flex items-center gap-2"
                   data-magnetic
                 >
-                  Calculate Structure <ChevronRight className="w-4 h-4" />
+                  {t.cta.calculate} <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -141,8 +143,8 @@ export default function CTAEstimator() {
           {/* STEP 3 - Features */}
           {step === 3 && (
             <div className="animate-in fade-in slide-in-from-right-8 duration-500">
-              <button onClick={() => setStep(2)} className="text-brand-teal text-sm mb-4 hover:underline">← Back</button>
-              <h3 className="text-2xl font-semibold text-white mb-6">3. Select Key Features</h3>
+              <button onClick={() => setStep(2)} className="text-brand-teal text-sm mb-4 hover:underline">{t.cta.back}</button>
+              <h3 className="text-2xl font-semibold text-white mb-6">{t.cta.step3Title}</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {["AI Integration", "Payment Gateway", "Advanced Analytics", "Custom CMS", "User Auth", "Multi-language"].map((feature) => (
                   <button
@@ -170,7 +172,7 @@ export default function CTAEstimator() {
                   className="px-8 py-3 bg-brand-teal text-white rounded-full font-medium hover:bg-brand-teal/80 transition-colors flex items-center gap-2"
                   data-magnetic
                 >
-                  Continue <ChevronRight className="w-4 h-4" />
+                  {t.cta.continue} <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -179,23 +181,23 @@ export default function CTAEstimator() {
           {/* STEP 4 - Results & Contact */}
           {step === 4 && (
             <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
-              <button onClick={() => setStep(3)} className="text-brand-teal text-sm mb-4 hover:underline">← Edit Features</button>
+              <button onClick={() => setStep(3)} className="text-brand-teal text-sm mb-4 hover:underline">{t.cta.editFeatures}</button>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 {/* Graph/Estimate */}
                 <div>
-                  <h3 className="text-xl font-semibold text-white mb-4">Structural Analysis</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">{t.cta.analysisTitle}</h3>
                   <div className="bg-brand-dark/50 rounded-2xl p-6 border border-white/5">
                     <div className="mb-6">
-                      <div className="text-sm text-gray-400 mb-1">Estimated Complexity Tier</div>
-                      <div className="text-4xl font-bold text-brand-teal">Level {Math.round(getEstimate() / 15)}</div>
+                      <div className="text-sm text-gray-400 mb-1">{t.cta.complexityTier}</div>
+                      <div className="text-4xl font-bold text-brand-teal">{t.cta.level} {Math.round(getEstimate() / 15)}</div>
                     </div>
-                    
+
                     <div className="space-y-4">
                        <div>
                          <div className="flex justify-between text-xs text-gray-400 mb-1">
-                           <span>Agentic Integration</span>
-                           <span>{getEstimate() > 100 ? 'High' : 'Standard'}</span>
+                           <span>{t.cta.agenticIntegration}</span>
+                           <span>{getEstimate() > 100 ? t.cta.high : t.cta.standard}</span>
                          </div>
                          <div className="w-full bg-white/10 rounded-full h-2">
                            <div className="bg-brand-purple h-2 rounded-full" style={{ width: `${Math.min(100, getEstimate() * 0.7)}%` }}></div>
@@ -203,8 +205,8 @@ export default function CTAEstimator() {
                        </div>
                        <div>
                          <div className="flex justify-between text-xs text-gray-400 mb-1">
-                           <span>Scalability Index</span>
-                           <span>{scope === "Enterprise" ? 'Maximum' : 'Flexible'}</span>
+                           <span>{t.cta.scalabilityIndex}</span>
+                           <span>{scope === "Enterprise" ? t.cta.maximum : t.cta.flexible}</span>
                          </div>
                          <div className="w-full bg-white/10 rounded-full h-2">
                            <div className="bg-brand-teal h-2 rounded-full" style={{ width: `${Math.min(100, getEstimate() * 0.9)}%` }}></div>
@@ -216,20 +218,20 @@ export default function CTAEstimator() {
 
                 {/* Contact Form */}
                 <div>
-                  <h3 className="text-xl font-semibold text-white mb-4">Engage Protocol</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">{t.cta.contactTitle}</h3>
                   <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
                     <div>
-                      <input type="text" placeholder="Designation (Name)" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-brand-teal transition-colors" />
+                      <input type="text" placeholder={t.cta.namePlaceholder} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-brand-teal transition-colors" />
                     </div>
                     <div>
-                      <input type="email" placeholder="Comms Channel (Email)" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-brand-teal transition-colors" />
+                      <input type="email" placeholder={t.cta.emailPlaceholder} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-brand-teal transition-colors" />
                     </div>
                     <div>
-                      <label className="block text-sm text-gray-400 mb-2">Project Discussion (Tell us more about what you want to achieve)</label>
-                      <textarea placeholder="Describe your vision, requirements, or any specific details..." rows={4} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-brand-teal transition-colors resize-none"></textarea>
+                      <label className="block text-sm text-gray-400 mb-2">{t.cta.projectLabel}</label>
+                      <textarea placeholder={t.cta.projectPlaceholder} rows={4} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-brand-teal transition-colors resize-none"></textarea>
                     </div>
                     <button className="w-full py-3 bg-brand-teal text-white rounded-xl font-medium hover:bg-brand-teal/80 transition-colors" data-magnetic>
-                      Initialize System Build
+                      {t.cta.submit}
                     </button>
                   </form>
                 </div>

@@ -3,8 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useDict } from "@/lib/i18n/LocaleProvider";
 
 export default function Header() {
+  const t = useDict();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -29,11 +31,11 @@ export default function Header() {
         </Link>
 
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-          <Link href="#philosophy" className="text-gray-300 hover:text-white transition-colors" data-magnetic>Philosophy</Link>
-          <Link href="#capabilities" className="text-gray-300 hover:text-white transition-colors" data-magnetic>Capabilities</Link>
-          <Link href="#estimate" className="text-gray-300 hover:text-white transition-colors" data-magnetic>Estimate</Link>
+          <Link href="#philosophy" className="text-gray-300 hover:text-white transition-colors" data-magnetic>{t.header.philosophy}</Link>
+          <Link href="#capabilities" className="text-gray-300 hover:text-white transition-colors" data-magnetic>{t.header.capabilities}</Link>
+          <Link href="#estimate" className="text-gray-300 hover:text-white transition-colors" data-magnetic>{t.header.estimate}</Link>
           <Link href="#contact" className="px-5 py-2.5 bg-brand-teal/20 text-brand-teal border border-brand-teal/30 hover:bg-brand-teal hover:text-white transition-colors rounded-full" data-magnetic>
-            Initialize Project
+            {t.header.initProject}
           </Link>
         </nav>
       </div>

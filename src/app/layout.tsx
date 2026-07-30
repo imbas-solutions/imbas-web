@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
+import { resolveLocale } from "@/lib/i18n/locale";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -14,19 +16,23 @@ export const metadata: Metadata = {
   description: "Premier software factory specializing in Agentic UX, Multi-Agent Systems, mobile development, and self-adaptive intelligent applications.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await resolveLocale();
+
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
+    <html lang={locale} className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans bg-brand-dark text-brand-light">
-        <Header />
-        <div className="flex-grow">
-          {children}
-        </div>
-        <Footer />
+        <LocaleProvider locale={locale}>
+          <Header />
+          <div className="flex-grow">
+            {children}
+          </div>
+          <Footer locale={locale} />
+        </LocaleProvider>
       </body>
     </html>
   );
