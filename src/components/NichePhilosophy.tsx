@@ -31,11 +31,11 @@ gsap.registerPlugin(ScrollTrigger);
  */
 
 const rootServices = [
+  { icon: Network, title: "AI Agents & Automation", desc: "Agents that handle real support, ops, and data work." },
+  { icon: ArrowRight, title: "Legacy Modernization", desc: "AI-ready upgrades to the systems you already run." },
   { icon: Zap, title: "Web & Mobile Apps", desc: "Native iOS/Android and PWA." },
   { icon: Server, title: "Cloud Infrastructure", desc: "Scalable architectures." },
   { icon: ShieldCheck, title: "AI Security", desc: "Enterprise data leak protection." },
-  { icon: Network, title: "Multi-Agent Systems", desc: "Integrating disparate models." },
-  { icon: ArrowRight, title: "Legacy Modernization", desc: "AI-First system upgrades." },
   { icon: Workflow, title: "Data Pipelines", desc: "Solving bottlenecks & latency." },
 ];
 
@@ -43,23 +43,23 @@ const trunkPillars = [
   {
     index: "01",
     icon: Database,
-    title: "Migración de Datos",
-    desc: "Transiciones seguras, sin pérdida de información y con integridad garantizada para sistemas de misión crítica.",
-    chips: ["Zero downtime", "Integridad total"],
+    title: "Data Migration",
+    desc: "Secure transitions with zero data loss and guaranteed integrity for mission-critical systems.",
+    chips: ["Zero downtime", "Full integrity"],
   },
   {
     index: "02",
     icon: ShieldAlert,
-    title: "Guard Rails para IA",
-    desc: "Políticas estrictas y barreras de seguridad para que los modelos operen dentro de parámetros corporativos.",
+    title: "AI Guardrails",
+    desc: "Strict policies and safety barriers so models operate within corporate parameters.",
     chips: ["Compliance", "Auditable"],
   },
   {
     index: "03",
     icon: ServerCog,
-    title: "Integración Legacy",
-    desc: "Conectamos infraestructuras antiguas con procesos AI-First sin interrumpir la operación del negocio.",
-    chips: ["SLA 99.99%", "Sin fricción"],
+    title: "Legacy Integration",
+    desc: "We connect legacy infrastructure to AI-first workflows without interrupting business operations.",
+    chips: ["SLA 99.99%", "Frictionless"],
   },
 ];
 
@@ -510,9 +510,9 @@ export default function NichePhilosophy() {
           <div className="rail-fill absolute left-0 top-1 bottom-1 w-px bg-gradient-to-b from-brand-glow to-brand-teal" />
 
           {[
-            { n: "01", label: "Las hojas" },
-            { n: "02", label: "El tronco" },
-            { n: "03", label: "Las raíces" },
+            { n: "01", label: "The Leaves" },
+            { n: "02", label: "The Trunk" },
+            { n: "03", label: "The Roots" },
           ].map((item, i) => (
             <div key={item.n} className="relative flex items-center gap-3">
               <span
@@ -537,10 +537,10 @@ export default function NichePhilosophy() {
       >
         <div className="pa-title text-center mb-10 md:mb-0 md:absolute md:top-[6%] w-full px-6">
           <p className="text-xs font-mono uppercase tracking-[0.35em] text-brand-mint mb-3">
-            Fase 01 · Las hojas
+            Phase 01 · The Leaves
           </p>
           <h2 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-brand-glow">
-            Experiencias Autoadaptativas
+            Self-Adaptive Experiences
           </h2>
         </div>
 
@@ -550,7 +550,7 @@ export default function NichePhilosophy() {
             <MessageSquare className="w-5 h-5 text-brand-glow mt-1 flex-shrink-0" />
             <div>
               <p className="text-sm font-medium text-white leading-relaxed">
-                “Quiero un reporte de ventas del último mes, comparado con el año anterior.”
+                “I need last month&apos;s sales report, compared to the same month last year.”
               </p>
               <span className="block mt-2 text-[10px] font-mono text-gray-500">09:41 · CEO</span>
             </div>
@@ -563,7 +563,7 @@ export default function NichePhilosophy() {
             <div className="flex items-center justify-between gap-3 mb-5">
               <div className="flex items-center gap-2">
                 <BarChart3 className="w-5 h-5 text-brand-glow" />
-                <span className="text-sm font-medium tracking-wider text-gray-300">Ventas (YoY)</span>
+                <span className="text-sm font-medium tracking-wider text-gray-300">Sales (YoY)</span>
               </div>
               <div className="flex items-center gap-2 px-2.5 py-1 rounded-full border border-brand-glow/25 bg-brand-glow/5">
                 <span className="w-1.5 h-1.5 rounded-full bg-brand-glow animate-pulse" />
@@ -581,11 +581,11 @@ export default function NichePhilosophy() {
               ))}
             </div>
             <div className="flex justify-between mt-2 text-[10px] text-gray-500 font-mono">
-              <span>Ene</span><span>Feb</span><span>Mar</span><span>Abr</span><span>May</span><span>Jun</span>
+              <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
             </div>
             <div className="adapt-badge mt-4 flex items-center gap-2 text-[11px] text-brand-mint font-mono">
               <CheckCircle2 className="w-3.5 h-3.5" />
-              Panel reorganizado según tus preferencias
+              Dashboard rearranged to match your preferences
             </div>
           </div>
 
@@ -593,7 +593,7 @@ export default function NichePhilosophy() {
           <div className="pa-item pa-item-3 md:absolute md:bottom-[4%] md:left-[12%] lg:left-[16%] glass-teal rounded-2xl rounded-br-sm p-4 max-w-xs flex items-start gap-3">
             <CheckCircle2 className="w-5 h-5 text-brand-glow mt-1 flex-shrink-0" />
             <p className="text-sm font-medium text-white leading-relaxed">
-              ¡Reporte generado! He adaptado el panel a tus preferencias de visualización.
+              Report generated! I&apos;ve adapted the dashboard to your display preferences.
             </p>
             <span className="hidden md:block absolute -top-px -right-6 w-6 h-px bg-gradient-to-r from-brand-glow/50 to-transparent" />
           </div>
@@ -607,13 +607,13 @@ export default function NichePhilosophy() {
       >
         <div className="pb-title text-center mb-10 md:mb-0 md:absolute md:top-[6%] w-full px-6">
           <p className="text-xs font-mono uppercase tracking-[0.35em] text-brand-mint mb-3">
-            Fase 02 · El tronco
+            Phase 02 · The Trunk
           </p>
           <h2 className="text-3xl md:text-5xl font-extrabold uppercase tracking-tight text-white">
-            Confianza Empresarial
+            Enterprise Trust
           </h2>
           <p className="text-base md:text-lg text-gray-400 font-medium max-w-2xl mx-auto mt-3">
-            Cimientos sólidos para entornos corporativos exigentes.
+            Solid foundations for demanding corporate environments.
           </p>
         </div>
 
@@ -662,10 +662,10 @@ export default function NichePhilosophy() {
       <div ref={phaseCRef} className="relative py-24 md:py-0 md:absolute md:inset-0 w-full md:h-full z-10">
         <div className="pc-title text-center mb-10 md:mb-0 md:absolute md:top-[5%] w-full px-6 z-20">
           <p className="text-xs font-mono uppercase tracking-[0.35em] text-brand-mint mb-3">
-            Fase 03 · Las raíces
+            Phase 03 · The Roots
           </p>
           <h2 className="text-2xl md:text-4xl font-bold text-white">
-            Profundidad Tecnológica
+            Technical Depth
           </h2>
         </div>
 
@@ -702,7 +702,7 @@ export default function NichePhilosophy() {
 
         <div className="pc-caption mt-10 md:mt-0 md:absolute md:bottom-[5%] w-full text-center px-6">
           <p className="text-sm font-mono text-brand-mint/70 tracking-widest uppercase">
-            Un solo núcleo · Infinitas ramas
+            One core · Infinite branches
           </p>
         </div>
       </div>

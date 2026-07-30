@@ -263,7 +263,7 @@ export default function HeroReveal() {
                     <div className="flex items-center gap-2 mb-2">
                       <Activity className="w-3.5 h-3.5 text-brand-mint" />
                       <span className="text-[10px] font-mono uppercase tracking-widest text-gray-400">
-                        Eficiencia
+                        Efficiency
                       </span>
                     </div>
                     <span ref={kpiEffRef} className="text-3xl font-bold text-white tabular-nums">
@@ -274,7 +274,7 @@ export default function HeroReveal() {
                     <div className="flex items-center gap-2 mb-2">
                       <Cpu className="w-3.5 h-3.5 text-brand-mint" />
                       <span className="text-[10px] font-mono uppercase tracking-widest text-gray-400">
-                        Respuesta
+                        Response
                       </span>
                     </div>
                     <span ref={kpiLatRef} className="text-3xl font-bold text-white tabular-nums">
@@ -287,7 +287,7 @@ export default function HeroReveal() {
                 <div ref={addToElementsRef} className="w-full rounded-2xl glass p-4">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-[10px] font-mono uppercase tracking-widest text-gray-400">
-                      Rendimiento del sistema
+                      System Performance
                     </span>
                     <span className="text-[10px] font-mono text-brand-glow/70">24h</span>
                   </div>
@@ -320,9 +320,9 @@ export default function HeroReveal() {
                 {/* Agent feed */}
                 <div ref={addToElementsRef} className="w-full flex-1 rounded-2xl glass p-4 flex flex-col justify-center gap-3">
                   {[
-                    { icon: GitBranch, label: "Agente de datos", state: "sincronizado" },
-                    { icon: Cpu, label: "Agente de UI", state: "adaptando" },
-                    { icon: Activity, label: "Agente de QA", state: "verificando" },
+                    { icon: GitBranch, label: "Data Agent", state: "synced" },
+                    { icon: Cpu, label: "UI Agent", state: "adapting" },
+                    { icon: Activity, label: "QA Agent", state: "verifying" },
                   ].map(({ icon: Icon, label, state }) => (
                     <div key={label} className="agent-row flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -345,7 +345,7 @@ export default function HeroReveal() {
           <div className="hero-eyebrow inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-teal/30 bg-brand-teal/5 backdrop-blur-sm mb-8">
             <Sparkles className="w-3.5 h-3.5 text-brand-glow" />
             <span className="text-xs font-mono uppercase tracking-[0.2em] text-brand-mint">
-              Imbas Solutions · AI-First Engineering
+              Imbas Solutions · AI Agents That Ship
             </span>
           </div>
 
@@ -364,8 +364,8 @@ export default function HeroReveal() {
           </h1>
 
           <p className="hero-sub text-lg md:text-xl text-gray-400 font-light leading-relaxed mb-10">
-            Imbas Solutions pioneers the future of intelligent architecture, fusing
-            Agentic UX with self-modifying software frameworks.
+            Imbas Solutions builds AI agents and automation that do real work —
+            plus the mobile apps, cloud infrastructure, and legacy systems they run on.
           </p>
 
           <div className="flex flex-wrap items-center gap-4">
@@ -373,14 +373,14 @@ export default function HeroReveal() {
               href="#contact"
               className="hero-cta group inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-brand-teal text-white font-medium transition-all duration-300 hover:bg-brand-mint hover:shadow-[0_0_35px_rgba(0,255,204,0.35)]"
             >
-              Agenda una demo
+              Book a Call
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
             </a>
             <a
-              href="#philosophy"
+              href="#capabilities"
               className="hero-cta inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-white/15 text-gray-300 font-medium backdrop-blur-sm transition-all duration-300 hover:border-brand-glow/40 hover:text-white"
             >
-              Explora el ecosistema
+              See What We Build
             </a>
           </div>
         </div>

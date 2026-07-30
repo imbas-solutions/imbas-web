@@ -21,11 +21,12 @@ export default function Footer() {
             Software that Learns, Adapts, and Thinks.
           </p>
         </div>
-        
+
         <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-400">
+          <a href="mailto:hello@imbas.solutions" className="hover:text-brand-teal transition-colors" data-magnetic>
+            hello@imbas.solutions
+          </a>
           <Link href="/ai-agents.md" className="hover:text-brand-teal transition-colors" data-magnetic>Agent Endpoint</Link>
-          <Link href="#" className="hover:text-brand-teal transition-colors" data-magnetic>Privacy Protocol</Link>
-          <Link href="#" className="hover:text-brand-teal transition-colors" data-magnetic>Terms of Service</Link>
         </div>
       </div>
       <div className="max-w-7xl mx-auto px-6 mt-16 text-center text-xs text-gray-600">

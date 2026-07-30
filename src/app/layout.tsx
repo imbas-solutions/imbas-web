@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -9,9 +10,58 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://imbas.solutions";
+
 export const metadata: Metadata = {
-  title: "Imbas Solutions | Intelligent, Self-Modifying Software",
-  description: "Premier software factory specializing in Agentic UX, Multi-Agent Systems, mobile development, and self-adaptive intelligent applications.",
+  metadataBase: new URL(SITE_URL),
+  title: "Imbas Solutions | AI Agent Integration & Custom Software",
+  description:
+    "Founder-led software factory building AI agents, automation, mobile apps, and legacy modernization for US and Canadian teams. Projects from $10k to $50k.",
+  keywords: [
+    "AI agent development",
+    "AI integration for small business",
+    "custom software development",
+    "legacy system modernization",
+    "mobile app development agency",
+    "nearshore software development",
+  ],
+  openGraph: {
+    title: "Imbas Solutions | AI Agent Integration & Custom Software",
+    description:
+      "Founder-led software factory building AI agents, automation, mobile apps, and legacy modernization for US and Canadian teams.",
+    url: SITE_URL,
+    siteName: "Imbas Solutions",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Imbas Solutions | AI Agent Integration & Custom Software",
+    description:
+      "Founder-led software factory building AI agents, automation, mobile apps, and legacy modernization for US and Canadian teams.",
+  },
+  alternates: {
+    canonical: SITE_URL,
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  name: "Imbas Solutions",
+  url: SITE_URL,
+  email: "hello@imbas.solutions",
+  description:
+    "Founder-led software factory building AI agents, automation, mobile apps, cloud infrastructure, and legacy modernization for US and Canadian teams.",
+  areaServed: ["US", "CA"],
+  priceRange: "$10,000–$50,000",
+  serviceType: [
+    "AI agent development",
+    "AI integration",
+    "Mobile app development",
+    "Cloud infrastructure",
+    "Legacy system modernization",
+  ],
 };
 
 export default function RootLayout({
@@ -22,11 +72,16 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans bg-brand-dark text-brand-light">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <Header />
         <div className="flex-grow">
           {children}
         </div>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
