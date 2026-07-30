@@ -1,7 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
+import { getDictionary, type Locale } from "@/lib/i18n/dictionaries";
 
-export default function Footer() {
+export default function Footer({ locale }: { locale: Locale }) {
+  const t = getDictionary(locale);
   return (
     <footer className="w-full bg-[#0a050d] border-t border-white/5 py-16 relative overflow-hidden">
       {/* Subtle background glow */}
@@ -18,19 +20,19 @@ export default function Footer() {
             />
           </Link>
           <p className="text-gray-500 text-sm max-w-xs text-center md:text-left">
-            Software that Learns, Adapts, and Thinks.
+            {t.footer.tagline}
           </p>
         </div>
 
         <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-400">
-          <a href="mailto:hello@imbas.solutions" className="hover:text-brand-teal transition-colors" data-magnetic>
-            hello@imbas.solutions
+          <a href={`mailto:${t.footer.email}`} className="hover:text-brand-teal transition-colors" data-magnetic>
+            {t.footer.email}
           </a>
-          <Link href="/ai-agents.md" className="hover:text-brand-teal transition-colors" data-magnetic>Agent Endpoint</Link>
+          <Link href="/ai-agents.md" className="hover:text-brand-teal transition-colors" data-magnetic>{t.footer.agentEndpoint}</Link>
         </div>
       </div>
       <div className="max-w-7xl mx-auto px-6 mt-16 text-center text-xs text-gray-600">
-        &copy; {new Date().getFullYear()} Imbas Solutions. All rights reserved.
+        &copy; {new Date().getFullYear()} Imbas Solutions. {t.footer.rights}
       </div>
     </footer>
   );

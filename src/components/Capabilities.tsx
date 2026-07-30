@@ -9,75 +9,48 @@ import {
   Network,
 } from "lucide-react";
 
-const capabilities = [
-  {
-    icon: Bot,
-    title: "AI Agents & Automation",
-    desc: "We connect the AI tools you already pay for to your actual workflows — support, ops, data entry — so they produce real output, not demos.",
-    flagship: true,
-  },
-  {
-    icon: ShieldAlert,
-    title: "Legacy Modernization & AI Guardrails",
-    desc: "Bring AI into existing systems safely: compliance-ready guardrails, audit trails, and zero-downtime migrations for mission-critical software.",
-    flagship: true,
-  },
-  {
-    icon: Smartphone,
-    title: "Mobile Apps",
-    desc: "Native iOS/Android and cross-platform apps, built to ship and scale.",
-  },
-  {
-    icon: Globe,
-    title: "Web Platforms",
-    desc: "Custom web apps and internal tools, from MVP to enterprise scale.",
-  },
-  {
-    icon: Server,
-    title: "Cloud Infrastructure",
-    desc: "Scalable, reliable architecture that holds up under real traffic.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "AI Security & Data Protection",
-    desc: "Enterprise-grade leak protection and data sanitization for AI-connected systems.",
-  },
-  {
-    icon: Database,
-    title: "Data Migration",
-    desc: "Safe, zero-downtime transitions with guaranteed data integrity.",
-  },
-  {
-    icon: Network,
-    title: "Multi-Agent Systems",
-    desc: "Integrating multiple LLMs and models into one coherent system.",
-  },
-];
+import { getDictionary, type Locale } from "@/lib/i18n/dictionaries";
 
-export default function Capabilities() {
+/* Order must match capabilities.items in the dictionaries.
+   The first two are flagship offerings and get the accented card treatment. */
+const capabilityIcons = [
+  Bot,
+  ShieldAlert,
+  Smartphone,
+  Globe,
+  Server,
+  ShieldCheck,
+  Database,
+  Network,
+];
+const FLAGSHIP_COUNT = 2;
+
+export default function Capabilities({ locale }: { locale: Locale }) {
+  const t = getDictionary(locale);
+
   return (
     <section id="capabilities" className="py-28 md:py-32 w-full bg-brand-dark relative border-t border-white/5 scroll-mt-24">
       <div className="max-w-6xl mx-auto px-6">
         <div className="max-w-2xl mb-16">
           <p className="text-xs font-mono uppercase tracking-[0.35em] text-brand-mint mb-3">
-            What We Build
+            {t.capabilities.eyebrow}
           </p>
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
-            Capabilities
+            {t.capabilities.title}
           </h2>
           <p className="text-gray-400 leading-relaxed">
-            Imbas Solutions is a founder-led software factory working with US and Canadian
-            teams. Most engagements run $10k&ndash;$50k, from a focused AI-agent
-            integration to a full modernization project.
+            {t.capabilities.intro}
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {capabilities.map(({ icon: Icon, title, desc, flagship }) => (
+          {t.capabilities.items.map(({ title, desc }, i) => {
+            const Icon = capabilityIcons[i];
+            return (
             <div
               key={title}
               className={`rounded-2xl p-6 border ${
-                flagship
+                i < FLAGSHIP_COUNT
                   ? "border-brand-teal/30 bg-brand-teal/5"
                   : "border-white/10 bg-white/[0.02]"
               }`}
@@ -88,7 +61,8 @@ export default function Capabilities() {
               <h3 className="text-base font-semibold text-white mb-2">{title}</h3>
               <p className="text-sm text-gray-400 leading-relaxed">{desc}</p>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

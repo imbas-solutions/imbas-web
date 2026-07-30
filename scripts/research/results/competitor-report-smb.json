@@ -1,0 +1,26 @@
+{
+  "https://chaseagents.com/": {
+    "title": "Chase Agents | AI Workflows You Can Trust",
+    "metaDesc": "Build reliable business workflows in plain English. Use Chase Agents on the web, in Slack, or in Claude and ChatGPT to connect apps and cut AI costs.",
+    "h1": "",
+    "textContentLength": 0
+  },
+  "https://tenaxity.ai/": {
+    "title": "AI Automation Agency - Liberate Your Teams | Tenaxity",
+    "metaDesc": "Build reliable AI agents and workflow automations that reduce admin, improve follow-up, and give your team more time for valuable work.",
+    "h1": "AI Automation Agency for Growing Teams",
+    "textContentLength": 2777
+  },
+  "https://jadasquad.com/": {
+    "title": "Top AI Agent Development Service | The JADA Squad",
+    "metaDesc": "Looking for Agentic AI solutions? JADA develops and manages custom AI Agents to help organizations work smarter and faster. Talk to our experts today!",
+    "h1": "Production-Grade AI Agents for Your Business",
+    "textContentLength": 3000
+  },
+  "https://vertechdigital.com/": {
+    "title": "AI Automation Agency for Sales, Lead & Workflow Automation",
+    "metaDesc": "VerTech Digital builds AI automation systems that respond to inbound leads, automate CRM records, automate follow-ups, and reduce manual work for service businesses",
+    "h1": "AI Automation Agency That Converts Every Inbound Lead Into a CRM-Ready Revenue Asset",
+    "textContentLength": 3000
+  }
+}

@@ -12,7 +12,17 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Claude Code local tooling, including git worktrees that contain
+    // full copies of this source tree.
+    ".claude/**",
   ]),
+  {
+    // Standalone CommonJS scrapers run directly with `node`, not bundled.
+    files: ["scripts/**/*.js"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;
