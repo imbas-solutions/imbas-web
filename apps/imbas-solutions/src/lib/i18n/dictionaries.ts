@@ -6,6 +6,8 @@ export interface Dictionary {
     capabilities: string;
     estimate: string;
     initProject: string;
+    /** Accessible label for the light/night theme switch */
+    themeToggle: string;
   };
   hero: {
     eyebrow: string;
@@ -123,6 +125,7 @@ const es: Dictionary = {
     capabilities: "Capacidades",
     estimate: "Estimación",
     initProject: "Iniciar Proyecto",
+    themeToggle: "Cambiar tema",
   },
   hero: {
     eyebrow: "Imbas Solutions · Agentes de IA que Funcionan",
@@ -338,6 +341,7 @@ const en: Dictionary = {
     capabilities: "Capabilities",
     estimate: "Estimate",
     initProject: "Start a Project",
+    themeToggle: "Switch theme",
   },
   hero: {
     eyebrow: "Imbas Solutions · AI Agents That Ship",

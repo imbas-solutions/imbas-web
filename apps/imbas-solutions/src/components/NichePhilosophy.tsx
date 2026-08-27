@@ -6,6 +6,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { useGSAP } from "@gsap/react";
 import { useDict } from "@/lib/i18n/LocaleProvider";
+import { useTheme } from "@/lib/theme/ThemeProvider";
+import { cssVar } from "@/lib/theme/cssVar";
 import {
   BarChart3,
   Database,
@@ -52,6 +54,7 @@ const rootCardPos = [
 
 export default function NichePhilosophy() {
   const t = useDict();
+  const { theme } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const spineRef = useRef<HTMLDivElement>(null);
   const crownGroupRef = useRef<SVGGElement>(null);
@@ -232,10 +235,17 @@ export default function NichePhilosophy() {
       const total = tl.duration();
       tl.to(".rail-fill", { scaleY: 1, duration: total, ease: "none" }, 0);
 
+      // Tokens resolved here rather than inlined — GSAP cannot tween to var().
+      const railOn = cssVar("--figure-node");
+      const railOff = cssVar("--figure-line");
+      const railGlow = cssVar("--rail-dot-glow");
+      const labelOn = cssVar("--ink");
+      const labelOff = cssVar("--ink-subtle");
+
       const activate = (sel: string, t: number) =>
-        tl.to(sel, { backgroundColor: "#00ffcc", boxShadow: "0 0 12px rgba(0,255,204,0.8)", scale: 1.4, duration: 0.2 }, t);
+        tl.to(sel, { backgroundColor: railOn, boxShadow: railGlow, scale: 1.4, duration: 0.2 }, t);
       const deactivate = (sel: string, t: number) =>
-        tl.to(sel, { backgroundColor: "rgba(0,152,139,0.6)", boxShadow: "none", scale: 1, duration: 0.2 }, t);
+        tl.to(sel, { backgroundColor: railOff, boxShadow: "none", scale: 1, duration: 0.2 }, t);
 
       activate(".rail-dot-1", 0.1);
       deactivate(".rail-dot-1", 3.4);
@@ -243,11 +253,11 @@ export default function NichePhilosophy() {
       deactivate(".rail-dot-2", 5.9);
       activate(".rail-dot-3", 6.0);
 
-      tl.to(".rail-label-1", { color: "#ffffff", duration: 0.2 }, 0.1);
-      tl.to(".rail-label-1", { color: "#6b7280", duration: 0.2 }, 3.4);
-      tl.to(".rail-label-2", { color: "#ffffff", duration: 0.2 }, 3.5);
-      tl.to(".rail-label-2", { color: "#6b7280", duration: 0.2 }, 5.9);
-      tl.to(".rail-label-3", { color: "#ffffff", duration: 0.2 }, 6.0);
+      tl.to(".rail-label-1", { color: labelOn, duration: 0.2 }, 0.1);
+      tl.to(".rail-label-1", { color: labelOff, duration: 0.2 }, 3.4);
+      tl.to(".rail-label-2", { color: labelOn, duration: 0.2 }, 3.5);
+      tl.to(".rail-label-2", { color: labelOff, duration: 0.2 }, 5.9);
+      tl.to(".rail-label-3", { color: labelOn, duration: 0.2 }, 6.0);
 
       /* ===== Idle life (independent of scroll) ===== */
 
@@ -309,18 +319,18 @@ export default function NichePhilosophy() {
         });
       });
     },
-    { scope: containerRef }
+    { scope: containerRef, dependencies: [theme], revertOnUpdate: true }
   );
 
   return (
     <section
       id="philosophy"
       ref={containerRef}
-      className="md:h-screen w-full bg-brand-deep relative overflow-hidden text-white font-sans grain"
+      className="md:h-screen w-full bg-surface relative overflow-hidden text-ink font-sans grain"
     >
       {/* Ambient glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(0,152,139,0.06)_0%,_transparent_55%)] pointer-events-none z-0" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_rgba(45,24,56,0.35)_0%,_transparent_60%)] pointer-events-none z-0" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--wash-accent)_0%,_transparent_55%)] pointer-events-none z-0" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--wash-deep)_0%,_transparent_60%)] pointer-events-none z-0" />
 
       {/* ================= THE TREE SPINE (logo geometry, 3 bands) ================= */}
       <div
@@ -341,16 +351,16 @@ export default function NichePhilosophy() {
             {/* Cheap glow: layered halo gradient instead of feGaussianBlur —
                 blur filters on an SVG this large crash weak compositors */}
             <radialGradient id="halo-teal" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#00ffcc" stopOpacity="0.5" />
-              <stop offset="100%" stopColor="#00ffcc" stopOpacity="0" />
+              <stop offset="0%" stopColor="var(--glow)" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="var(--glow)" stopOpacity="0" />
             </radialGradient>
             <radialGradient id="halo-lilac" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#b9a7d6" stopOpacity="0.45" />
-              <stop offset="100%" stopColor="#b9a7d6" stopOpacity="0" />
+              <stop offset="0%" stopColor="var(--figure-alt)" stopOpacity="0.45" />
+              <stop offset="100%" stopColor="var(--figure-alt)" stopOpacity="0" />
             </radialGradient>
             <linearGradient id="trunk-grad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#b9a7d6" stopOpacity="0.9" />
-              <stop offset="100%" stopColor="#7d6a9e" stopOpacity="0.75" />
+              <stop offset="0%" stopColor="var(--figure-alt)" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="var(--figure-alt-strong)" stopOpacity="0.75" />
             </linearGradient>
           </defs>
 
@@ -363,48 +373,48 @@ export default function NichePhilosophy() {
             <path
               className="draw crown-stem"
               d="M 396 720 C 380 640, 340 560, 300 480 C 260 400, 230 300, 205 190"
-              stroke="#00988b" strokeWidth="6" strokeLinecap="round"
+              stroke="var(--figure-line)" strokeWidth="6" strokeLinecap="round"
             />
             {/* Inner-left lilac stem */}
             <path
               className="draw crown-stem"
               d="M 398 700 C 390 620, 370 540, 350 470 C 330 410, 310 330, 302 250"
-              stroke="#b9a7d6" strokeWidth="4.5" strokeLinecap="round"
+              stroke="var(--figure-alt)" strokeWidth="4.5" strokeLinecap="round"
             />
             {/* Inner-right lilac hook (curls into the trunk, like the logo) */}
             <path
               className="draw crown-stem"
               d="M 402 480 C 404 430, 420 400, 445 370 C 470 340, 478 290, 472 215"
-              stroke="#b9a7d6" strokeWidth="4.5" strokeLinecap="round"
+              stroke="var(--figure-alt)" strokeWidth="4.5" strokeLinecap="round"
             />
             {/* Far-right teal stem */}
             <path
               className="draw crown-stem"
               d="M 404 720 C 420 640, 460 560, 500 480 C 540 400, 570 300, 592 190"
-              stroke="#00988b" strokeWidth="6" strokeLinecap="round"
+              stroke="var(--figure-line)" strokeWidth="6" strokeLinecap="round"
             />
 
             {/* Node tips — the "leaves" of the circuit tree */}
             <g className="crown-tip">
               <circle cx="400" cy="100" r="34" fill="url(#halo-lilac)" />
-              <circle cx="400" cy="100" r="15" stroke="#b9a7d6" strokeWidth="4" />
-              <circle cx="400" cy="100" r="6" fill="#00ffcc" />
+              <circle cx="400" cy="100" r="15" stroke="var(--figure-alt)" strokeWidth="4" />
+              <circle cx="400" cy="100" r="6" fill="var(--glow)" />
             </g>
             <g className="crown-tip">
               <circle cx="202" cy="172" r="26" fill="url(#halo-teal)" />
-              <circle cx="202" cy="172" r="10" stroke="#00ffcc" strokeWidth="4" />
+              <circle cx="202" cy="172" r="10" stroke="var(--glow)" strokeWidth="4" />
             </g>
             <g className="crown-tip">
               <circle cx="300" cy="236" r="20" fill="url(#halo-lilac)" />
-              <circle cx="300" cy="236" r="8" fill="#b9a7d6" />
+              <circle cx="300" cy="236" r="8" fill="var(--figure-alt)" />
             </g>
             <g className="crown-tip">
               <circle cx="471" cy="203" r="18" fill="url(#halo-lilac)" />
-              <circle cx="471" cy="203" r="7" stroke="#b9a7d6" strokeWidth="3.5" />
+              <circle cx="471" cy="203" r="7" stroke="var(--figure-alt)" strokeWidth="3.5" />
             </g>
             <g className="crown-tip">
               <circle cx="595" cy="178" r="26" fill="url(#halo-teal)" />
-              <circle cx="595" cy="178" r="10" fill="#00ffcc" />
+              <circle cx="595" cy="178" r="10" fill="var(--glow)" />
             </g>
           </g>
         </svg>
@@ -422,21 +432,21 @@ export default function NichePhilosophy() {
             {/* Main column */}
             <path className="draw trunk-column" d="M 400 0 L 400 800" stroke="url(#trunk-grad)" strokeWidth="11" strokeLinecap="round" />
             {/* Structural side rails */}
-            <path className="draw trunk-rail" d="M 382 30 L 382 775" stroke="rgba(255,255,255,0.18)" strokeWidth="2" />
-            <path className="draw trunk-rail" d="M 418 30 L 418 775" stroke="rgba(255,255,255,0.18)" strokeWidth="2" />
+            <path className="draw trunk-rail" d="M 382 30 L 382 775" stroke="var(--line-strong)" strokeWidth="2" />
+            <path className="draw trunk-rail" d="M 418 30 L 418 775" stroke="var(--line-strong)" strokeWidth="2" />
 
             {/* Machined crossbars */}
             {[100, 200, 300, 400, 500, 600, 700].map((y) => (
-              <path key={y} className="trunk-tick" d={`M 370 ${y} L 430 ${y}`} stroke="rgba(0,152,139,0.55)" strokeWidth="3" />
+              <path key={y} className="trunk-tick" d={`M 370 ${y} L 430 ${y}`} stroke="var(--figure-tick)" strokeWidth="3" />
             ))}
 
             {/* Docking connectors to the pillar cards */}
-            <path className="draw dock-line" d="M 400 160 L 180 160" stroke="rgba(0,255,204,0.35)" strokeWidth="2" />
-            <rect className="dock-pad" x="170" y="152" width="16" height="16" rx="3" fill="#060210" stroke="#00ffcc" strokeWidth="2" />
-            <path className="draw dock-line" d="M 400 400 L 620 400" stroke="rgba(0,255,204,0.35)" strokeWidth="2" />
-            <rect className="dock-pad" x="614" y="392" width="16" height="16" rx="3" fill="#060210" stroke="#00ffcc" strokeWidth="2" />
-            <path className="draw dock-line" d="M 400 640 L 180 640" stroke="rgba(0,255,204,0.35)" strokeWidth="2" />
-            <rect className="dock-pad" x="170" y="632" width="16" height="16" rx="3" fill="#060210" stroke="#00ffcc" strokeWidth="2" />
+            <path className="draw dock-line" d="M 400 160 L 180 160" stroke="var(--figure-dock)" strokeWidth="2" />
+            <rect className="dock-pad" x="170" y="152" width="16" height="16" rx="3" fill="var(--surface)" stroke="var(--glow)" strokeWidth="2" />
+            <path className="draw dock-line" d="M 400 400 L 620 400" stroke="var(--figure-dock)" strokeWidth="2" />
+            <rect className="dock-pad" x="614" y="392" width="16" height="16" rx="3" fill="var(--surface)" stroke="var(--glow)" strokeWidth="2" />
+            <path className="draw dock-line" d="M 400 640 L 180 640" stroke="var(--figure-dock)" strokeWidth="2" />
+            <rect className="dock-pad" x="170" y="632" width="16" height="16" rx="3" fill="var(--surface)" stroke="var(--glow)" strokeWidth="2" />
           </g>
         </svg>
 
@@ -454,46 +464,46 @@ export default function NichePhilosophy() {
             <path className="draw trunk-lower" d="M 400 0 L 400 500" stroke="url(#trunk-grad)" strokeWidth="11" strokeLinecap="round" />
 
             {/* Left root fan (teal ribbons, like the logo) */}
-            <path className="draw root-path" d="M 396 40 C 375 170, 320 270, 240 350 C 175 415, 120 490, 95 580" stroke="#00988b" strokeWidth="7" strokeLinecap="round" />
-            <path className="draw root-path" d="M 398 100 C 385 210, 345 300, 275 380 C 220 443, 175 510, 155 600" stroke="#00988b" strokeWidth="5" strokeLinecap="round" />
-            <path className="draw root-path" d="M 393 65 C 368 190, 312 285, 235 362" stroke="#2fbfae" strokeWidth="2.5" strokeLinecap="round" opacity="0.7" />
+            <path className="draw root-path" d="M 396 40 C 375 170, 320 270, 240 350 C 175 415, 120 490, 95 580" stroke="var(--figure-line)" strokeWidth="7" strokeLinecap="round" />
+            <path className="draw root-path" d="M 398 100 C 385 210, 345 300, 275 380 C 220 443, 175 510, 155 600" stroke="var(--figure-line)" strokeWidth="5" strokeLinecap="round" />
+            <path className="draw root-path" d="M 393 65 C 368 190, 312 285, 235 362" stroke="var(--figure-line-soft)" strokeWidth="2.5" strokeLinecap="round" opacity="0.7" />
 
             {/* Right root fan (mirrored) */}
-            <path className="draw root-path" d="M 404 40 C 425 170, 480 270, 560 350 C 625 415, 680 490, 705 580" stroke="#00988b" strokeWidth="7" strokeLinecap="round" />
-            <path className="draw root-path" d="M 402 100 C 415 210, 455 300, 525 380 C 580 443, 625 510, 645 600" stroke="#00988b" strokeWidth="5" strokeLinecap="round" />
-            <path className="draw root-path" d="M 407 65 C 432 190, 488 285, 565 362" stroke="#2fbfae" strokeWidth="2.5" strokeLinecap="round" opacity="0.7" />
+            <path className="draw root-path" d="M 404 40 C 425 170, 480 270, 560 350 C 625 415, 680 490, 705 580" stroke="var(--figure-line)" strokeWidth="7" strokeLinecap="round" />
+            <path className="draw root-path" d="M 402 100 C 415 210, 455 300, 525 380 C 580 443, 625 510, 645 600" stroke="var(--figure-line)" strokeWidth="5" strokeLinecap="round" />
+            <path className="draw root-path" d="M 407 65 C 432 190, 488 285, 565 362" stroke="var(--figure-line-soft)" strokeWidth="2.5" strokeLinecap="round" opacity="0.7" />
 
             {/* Split-ribbon accents near the tips (logo detail) */}
-            <path className="root-tick" d="M 140 485 L 102 540" stroke="#2fbfae" strokeWidth="3" strokeLinecap="round" />
-            <path className="root-tick" d="M 178 512 L 144 566" stroke="#2fbfae" strokeWidth="3" strokeLinecap="round" />
-            <path className="root-tick" d="M 660 485 L 698 540" stroke="#2fbfae" strokeWidth="3" strokeLinecap="round" />
-            <path className="root-tick" d="M 622 512 L 656 566" stroke="#2fbfae" strokeWidth="3" strokeLinecap="round" />
+            <path className="root-tick" d="M 140 485 L 102 540" stroke="var(--figure-line-soft)" strokeWidth="3" strokeLinecap="round" />
+            <path className="root-tick" d="M 178 512 L 144 566" stroke="var(--figure-line-soft)" strokeWidth="3" strokeLinecap="round" />
+            <path className="root-tick" d="M 660 485 L 698 540" stroke="var(--figure-line-soft)" strokeWidth="3" strokeLinecap="round" />
+            <path className="root-tick" d="M 622 512 L 656 566" stroke="var(--figure-line-soft)" strokeWidth="3" strokeLinecap="round" />
 
             {/* Root tip nodes */}
             <g className="root-tip">
               <circle cx="95" cy="580" r="18" fill="url(#halo-teal)" />
-              <circle cx="95" cy="580" r="6" fill="#00ffcc" />
+              <circle cx="95" cy="580" r="6" fill="var(--glow)" />
             </g>
             <g className="root-tip">
               <circle cx="155" cy="600" r="14" fill="url(#halo-teal)" />
-              <circle cx="155" cy="600" r="4.5" fill="#2fbfae" />
+              <circle cx="155" cy="600" r="4.5" fill="var(--figure-line-soft)" />
             </g>
             <g className="root-tip">
               <circle cx="705" cy="580" r="18" fill="url(#halo-teal)" />
-              <circle cx="705" cy="580" r="6" fill="#00ffcc" />
+              <circle cx="705" cy="580" r="6" fill="var(--glow)" />
             </g>
             <g className="root-tip">
               <circle cx="645" cy="600" r="14" fill="url(#halo-teal)" />
-              <circle cx="645" cy="600" r="4.5" fill="#2fbfae" />
+              <circle cx="645" cy="600" r="4.5" fill="var(--figure-line-soft)" />
             </g>
 
             {/* The concentric core node — the logo's grounding target */}
-            <circle className="core-pulse" cx="400" cy="560" r="52" stroke="#00ffcc" strokeWidth="2" opacity="0.5" />
-            <circle className="core-ring" cx="400" cy="560" r="52" stroke="#b9a7d6" strokeWidth="11" />
-            <circle className="core-ring" cx="400" cy="560" r="27" fill="#060210" stroke="#b9a7d6" strokeWidth="4" />
+            <circle className="core-pulse" cx="400" cy="560" r="52" stroke="var(--glow)" strokeWidth="2" opacity="0.5" />
+            <circle className="core-ring" cx="400" cy="560" r="52" stroke="var(--figure-alt)" strokeWidth="11" />
+            <circle className="core-ring" cx="400" cy="560" r="27" fill="var(--surface)" stroke="var(--figure-alt)" strokeWidth="4" />
             <g className="core-ring">
               <circle cx="400" cy="560" r="24" fill="url(#halo-teal)" />
-              <circle cx="400" cy="560" r="12" fill="#00ffcc" />
+              <circle cx="400" cy="560" r="12" fill="var(--glow)" />
             </g>
           </g>
         </svg>
@@ -503,8 +513,8 @@ export default function NichePhilosophy() {
       <div className="hidden md:flex absolute left-8 top-1/2 -translate-y-1/2 z-40 flex-col items-start gap-0">
         <div className="relative flex flex-col gap-14 pl-5">
           {/* Track + fill */}
-          <div className="absolute left-0 top-1 bottom-1 w-px bg-white/10" />
-          <div className="rail-fill absolute left-0 top-1 bottom-1 w-px bg-gradient-to-b from-brand-glow to-brand-teal" />
+          <div className="absolute left-0 top-1 bottom-1 w-px bg-veil-strong" />
+          <div className="rail-fill absolute left-0 top-1 bottom-1 w-px bg-gradient-to-b from-glow to-accent" />
 
           {t.niche.rail.map((label, i) => (
             <button
@@ -516,12 +526,12 @@ export default function NichePhilosophy() {
             >
               <span
                 className={`rail-dot-${i + 1} absolute -left-[22px] w-2 h-2 rounded-full transition-transform duration-300 group-hover:scale-150`}
-                style={{ backgroundColor: "rgba(0,152,139,0.6)" }}
+                style={{ backgroundColor: "var(--figure-line)" }}
               />
               <span className="flex flex-col">
-                <span className="text-[10px] font-mono text-brand-teal/60">{`0${i + 1}`}</span>
+                <span className="text-[10px] font-mono text-readout-dim">{`0${i + 1}`}</span>
                 <span
-                  className={`rail-label-${i + 1} text-xs font-medium tracking-wide text-gray-500 transition-colors duration-300 group-hover:text-brand-glow`}
+                  className={`rail-label-${i + 1} text-xs font-medium tracking-wide text-ink-subtle transition-colors duration-300 group-hover:text-glow`}
                 >
                   {label}
                 </span>
@@ -537,10 +547,10 @@ export default function NichePhilosophy() {
         className="relative py-24 md:py-0 md:absolute md:inset-0 w-full md:h-full flex flex-col items-center justify-center px-6 z-30"
       >
         <div className="pa-title text-center mb-10 md:mb-0 md:absolute md:top-[6%] w-full px-6">
-          <p className="text-xs font-mono uppercase tracking-[0.35em] text-brand-mint mb-3">
+          <p className="text-xs font-mono uppercase tracking-[0.35em] text-accent-strong mb-3">
             {t.niche.phaseA.eyebrow}
           </p>
-          <h2 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-brand-glow">
+          <h2 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-ink via-ink to-glow">
             {t.niche.phaseA.title}
           </h2>
         </div>
@@ -548,45 +558,45 @@ export default function NichePhilosophy() {
         <div className="relative w-full max-w-6xl h-auto md:h-[62vh] mt-0 md:mt-10 flex flex-col gap-5 md:block">
           {/* Leaf 1 — user request (attached near the left stem tip) */}
           <div className="pa-item pa-item-1 md:absolute md:top-[6%] md:left-[4%] lg:left-[8%] glass rounded-2xl rounded-tl-sm p-4 max-w-xs flex items-start gap-3">
-            <MessageSquare className="w-5 h-5 text-brand-glow mt-1 flex-shrink-0" />
+            <MessageSquare className="w-5 h-5 text-glow mt-1 flex-shrink-0" />
             <div>
-              <p className="text-sm font-medium text-white leading-relaxed">
+              <p className="text-sm font-medium text-ink leading-relaxed">
                 {t.niche.phaseA.chat1}
               </p>
-              <span className="block mt-2 text-[10px] font-mono text-gray-500">{t.niche.phaseA.chat1Meta}</span>
+              <span className="block mt-2 text-[10px] font-mono text-ink-subtle">{t.niche.phaseA.chat1Meta}</span>
             </div>
             {/* Connector to the branch */}
-            <span className="hidden md:block absolute -bottom-px -right-6 w-6 h-px bg-gradient-to-r from-brand-glow/50 to-transparent" />
+            <span className="hidden md:block absolute -bottom-px -right-6 w-6 h-px bg-gradient-to-r from-glow/50 to-transparent" />
           </div>
 
           {/* Leaf 2 — the living dashboard */}
           <div className="pa-item pa-item-2 md:absolute md:top-[22%] md:right-[4%] lg:right-[8%] glass rounded-3xl p-6 w-full max-w-md sheen">
             <div className="flex items-center justify-between gap-3 mb-5">
               <div className="flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-brand-glow" />
-                <span className="text-sm font-medium tracking-wider text-gray-300">{t.niche.phaseA.dashTitle}</span>
+                <BarChart3 className="w-5 h-5 text-glow" />
+                <span className="text-sm font-medium tracking-wider text-ink-muted">{t.niche.phaseA.dashTitle}</span>
               </div>
-              <div className="flex items-center gap-2 px-2.5 py-1 rounded-full border border-brand-glow/25 bg-brand-glow/5">
-                <span className="w-1.5 h-1.5 rounded-full bg-brand-glow animate-pulse" />
-                <span className="text-[9px] font-mono tracking-widest text-brand-glow/80">{t.niche.phaseA.adaptiveBadge}</span>
+              <div className="flex items-center gap-2 px-2.5 py-1 rounded-full border border-glow/25 bg-glow/5">
+                <span className="w-1.5 h-1.5 rounded-full bg-glow animate-pulse" />
+                <span className="text-[9px] font-mono tracking-widest text-readout-badge">{t.niche.phaseA.adaptiveBadge}</span>
               </div>
             </div>
-            <div className="h-36 border-b border-white/10 flex items-end justify-between gap-2.5 pb-0">
+            <div className="h-36 border-b border-line flex items-end justify-between gap-2.5 pb-0">
               {[30, 45, 60, 50, 85, 100].map((h, i) => (
                 <div key={i} className="w-full h-full flex items-end">
                   <div
-                    className="dash-bar w-full rounded-t-md bg-gradient-to-t from-brand-teal/60 to-brand-glow/80 shadow-[0_0_14px_rgba(0,255,204,0.25)]"
+                    className="dash-bar w-full rounded-t-md bg-gradient-to-t from-accent/60 to-glow/80 shadow-[var(--glow-bar)]"
                     style={{ height: `${h}%` }}
                   />
                 </div>
               ))}
             </div>
-            <div className="flex justify-between mt-2 text-[10px] text-gray-500 font-mono">
+            <div className="flex justify-between mt-2 text-[10px] text-ink-subtle font-mono">
               {t.niche.phaseA.months.map((m) => (
                 <span key={m}>{m}</span>
               ))}
             </div>
-            <div className="adapt-badge mt-4 flex items-center gap-2 text-[11px] text-brand-mint font-mono">
+            <div className="adapt-badge mt-4 flex items-center gap-2 text-[11px] text-accent-strong font-mono">
               <CheckCircle2 className="w-3.5 h-3.5" />
               {t.niche.phaseA.adaptedNote}
             </div>
@@ -594,11 +604,11 @@ export default function NichePhilosophy() {
 
           {/* Leaf 3 — system reply */}
           <div className="pa-item pa-item-3 md:absolute md:bottom-[4%] md:left-[12%] lg:left-[16%] glass-teal rounded-2xl rounded-br-sm p-4 max-w-xs flex items-start gap-3">
-            <CheckCircle2 className="w-5 h-5 text-brand-glow mt-1 flex-shrink-0" />
-            <p className="text-sm font-medium text-white leading-relaxed">
+            <CheckCircle2 className="w-5 h-5 text-glow mt-1 flex-shrink-0" />
+            <p className="text-sm font-medium text-ink leading-relaxed">
               {t.niche.phaseA.chat2}
             </p>
-            <span className="hidden md:block absolute -top-px -right-6 w-6 h-px bg-gradient-to-r from-brand-glow/50 to-transparent" />
+            <span className="hidden md:block absolute -top-px -right-6 w-6 h-px bg-gradient-to-r from-glow/50 to-transparent" />
           </div>
         </div>
       </div>
@@ -609,13 +619,13 @@ export default function NichePhilosophy() {
         className="relative py-24 md:py-0 md:absolute md:inset-0 w-full md:h-full flex flex-col items-center justify-center px-6 z-20"
       >
         <div className="pb-title text-center mb-10 md:mb-0 md:absolute md:top-[6%] w-full px-6">
-          <p className="text-xs font-mono uppercase tracking-[0.35em] text-brand-mint mb-3">
+          <p className="text-xs font-mono uppercase tracking-[0.35em] text-accent-strong mb-3">
             {t.niche.phaseB.eyebrow}
           </p>
-          <h2 className="text-3xl md:text-5xl font-extrabold uppercase tracking-tight text-white">
+          <h2 className="text-3xl md:text-5xl font-extrabold uppercase tracking-tight text-ink">
             {t.niche.phaseB.title}
           </h2>
-          <p className="text-base md:text-lg text-gray-400 font-medium max-w-2xl mx-auto mt-3">
+          <p className="text-base md:text-lg text-ink-muted font-medium max-w-2xl mx-auto mt-3">
             {t.niche.phaseB.sub}
           </p>
         </div>
@@ -633,23 +643,23 @@ export default function NichePhilosophy() {
             return (
               <div
                 key={pillar.title}
-                className={`pb-card pb-card-${i + 1} ${fromLeft ? "from-left" : "from-right"} ${pos} w-full max-w-sm bg-[#0c0714]/90 border border-white/10 rounded-md p-6 relative overflow-hidden`}
+                className={`pb-card pb-card-${i + 1} ${fromLeft ? "from-left" : "from-right"} ${pos} w-full max-w-sm bg-surface-raised/90 border border-line rounded-md p-6 relative overflow-hidden`}
               >
                 {/* Machined top hairline */}
-                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-glow/60 to-transparent" />
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-glow/60 to-transparent" />
                 <div className="flex items-start justify-between mb-5">
-                  <div className="w-11 h-11 rounded-sm bg-brand-teal/10 border border-brand-teal/30 flex items-center justify-center">
-                    <Icon className="w-5 h-5 text-brand-mint" />
+                  <div className="w-11 h-11 rounded-sm bg-accent/10 border border-accent/30 flex items-center justify-center">
+                    <Icon className="w-5 h-5 text-accent-strong" />
                   </div>
-                  <span className="text-2xl font-mono font-bold text-white/10">{`0${i + 1}`}</span>
+                  <span className="text-2xl font-mono font-bold text-ink/10">{`0${i + 1}`}</span>
                 </div>
                 <h3 className="text-xl font-bold mb-2 tracking-tight">{pillar.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed mb-4">{pillar.desc}</p>
+                <p className="text-ink-muted text-sm leading-relaxed mb-4">{pillar.desc}</p>
                 <div className="flex flex-wrap gap-2">
                   {pillar.chips.map((chip) => (
                     <span
                       key={chip}
-                      className="px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-brand-mint/80 border border-brand-teal/25 rounded-sm bg-brand-teal/5"
+                      className="px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-accent-strong/80 border border-accent/25 rounded-sm bg-accent/5"
                     >
                       {chip}
                     </span>
@@ -664,10 +674,10 @@ export default function NichePhilosophy() {
       {/* ================= PHASE C: ROOTS / TECHNOLOGICAL DEPTH ================= */}
       <div ref={phaseCRef} className="relative py-24 md:py-0 md:absolute md:inset-0 w-full md:h-full z-10">
         <div className="pc-title text-center mb-10 md:mb-0 md:absolute md:top-[5%] w-full px-6 z-20">
-          <p className="text-xs font-mono uppercase tracking-[0.35em] text-brand-mint mb-3">
+          <p className="text-xs font-mono uppercase tracking-[0.35em] text-accent-strong mb-3">
             {t.niche.phaseC.eyebrow}
           </p>
-          <h2 className="text-2xl md:text-4xl font-bold text-white">
+          <h2 className="text-2xl md:text-4xl font-bold text-ink">
             {t.niche.phaseC.title}
           </h2>
         </div>
@@ -689,14 +699,14 @@ export default function NichePhilosophy() {
                   ...(isLeft ? { left: pos.inset } : { right: pos.inset }),
                 }}
               >
-                <div className="w-14 h-14 rounded-full bg-brand-deep border border-brand-teal/50 shadow-[0_0_22px_rgba(0,152,139,0.35)] flex items-center justify-center relative z-10 flex-shrink-0 group-hover:shadow-[0_0_36px_rgba(0,255,204,0.5)] group-hover:border-brand-glow/70 transition-all duration-300">
-                  <Icon className="w-6 h-6 text-brand-mint" />
+                <div className="w-14 h-14 rounded-full bg-surface border border-accent/50 shadow-[var(--glow-node)] flex items-center justify-center relative z-10 flex-shrink-0 group-hover:shadow-[var(--glow-node-strong)] group-hover:border-glow/70 transition-all duration-300">
+                  <Icon className="w-6 h-6 text-accent-strong" />
                 </div>
                 <div className={`flex flex-col max-w-[220px] ${isLeft ? "md:text-left" : "md:text-right"}`}>
-                  <h4 className="text-base md:text-lg font-semibold text-white mb-0.5 group-hover:text-brand-glow transition-colors">
+                  <h4 className="text-base md:text-lg font-semibold text-ink mb-0.5 group-hover:text-glow transition-colors">
                     {service.title}
                   </h4>
-                  <p className="text-gray-400 text-xs md:text-sm">{service.desc}</p>
+                  <p className="text-ink-muted text-xs md:text-sm">{service.desc}</p>
                 </div>
               </div>
             );
@@ -704,7 +714,7 @@ export default function NichePhilosophy() {
         </div>
 
         <div className="pc-caption mt-10 md:mt-0 md:absolute md:bottom-[5%] w-full text-center px-6">
-          <p className="text-sm font-mono text-brand-mint/70 tracking-widest uppercase">
+          <p className="text-sm font-mono text-readout-caption tracking-widest uppercase">
             {t.niche.phaseC.caption}
           </p>
         </div>

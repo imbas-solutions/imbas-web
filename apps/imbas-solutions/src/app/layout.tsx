@@ -6,6 +6,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import { resolveLocale } from "@/lib/i18n/locale";
+import { ThemeProvider } from "@/lib/theme/ThemeProvider";
+import { resolveTheme } from "@/lib/theme/resolve";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -71,22 +73,28 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await resolveLocale();
+  const [locale, theme] = await Promise.all([resolveLocale(), resolveTheme()]);
 
   return (
-    <html lang={locale} className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-sans bg-brand-dark text-brand-light">
+    <html
+      lang={locale}
+      data-theme={theme}
+      className={`${inter.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col font-sans bg-surface text-ink">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <LocaleProvider locale={locale}>
-          <Header />
-          <div className="flex-grow">
-            {children}
-          </div>
-          <Footer locale={locale} />
-        </LocaleProvider>
+        <ThemeProvider theme={theme}>
+          <LocaleProvider locale={locale}>
+            <Header />
+            <div className="flex-grow">
+              {children}
+            </div>
+            <Footer locale={locale} />
+          </LocaleProvider>
+        </ThemeProvider>
         <Analytics />
       </body>
     </html>

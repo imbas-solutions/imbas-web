@@ -3,10 +3,13 @@
 import { useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { useTheme } from "@/lib/theme/ThemeProvider";
+import { cssVar } from "@/lib/theme/cssVar";
 
 export default function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const { theme } = useTheme();
 
   useGSAP(() => {
     const cursor = cursorRef.current;
@@ -29,12 +32,17 @@ export default function CustomCursor() {
     document.body.addEventListener("mouseenter", onMouseEnter);
     document.body.addEventListener("mouseleave", onMouseLeave);
 
-    // Add magnetic effect for links and buttons
+    // Add magnetic effect for links and buttons — colours come from the active
+    // theme's tokens, which GSAP has to read as literals.
+    const accent = cssVar("--accent");
+    const accentSoft = cssVar("--accent-soft");
+    const idleBorder = cssVar("--cursor-ring");
+
     const handleInteractiveEnter = () => {
       gsap.to(cursor, {
         scale: 2.5,
-        backgroundColor: "rgba(0, 152, 139, 0.1)", // Teal with opacity
-        borderColor: "rgba(0, 152, 139, 0.8)",
+        backgroundColor: accentSoft,
+        borderColor: accent,
         duration: 0.3,
       });
     };
@@ -43,7 +51,7 @@ export default function CustomCursor() {
       gsap.to(cursor, {
         scale: 1,
         backgroundColor: "transparent",
-        borderColor: "rgba(255, 255, 255, 0.5)",
+        borderColor: idleBorder,
         duration: 0.3,
       });
     };
@@ -63,12 +71,12 @@ export default function CustomCursor() {
         el.removeEventListener("mouseleave", handleInteractiveLeave);
       });
     };
-  }, { scope: cursorRef }); // useGSAP handles cleanup of GSAP animations automatically
+  }, { scope: cursorRef, dependencies: [theme], revertOnUpdate: true }); // useGSAP handles cleanup of GSAP animations automatically
 
   return (
     <div
       ref={cursorRef}
-      className={`fixed top-0 left-0 w-6 h-6 rounded-full border border-white/50 pointer-events-none z-[9999] transform -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'} hidden md:block`}
+      className={`fixed top-0 left-0 w-6 h-6 rounded-full border border-[var(--cursor-ring)] pointer-events-none z-[9999] transform -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'} hidden md:block`}
     />
   );
 }

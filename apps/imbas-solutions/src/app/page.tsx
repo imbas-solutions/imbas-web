@@ -10,7 +10,7 @@ export default async function Home() {
   const locale = await resolveLocale();
 
   return (
-    <main className="w-full min-h-screen bg-brand-dark text-brand-light selection:bg-brand-teal selection:text-white">
+    <main className="w-full min-h-screen bg-surface text-ink selection:bg-accent selection:text-on-accent">
       <CustomCursor />
 
       {/* Zone 1: The Hero Reveal */}

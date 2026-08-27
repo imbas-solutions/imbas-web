@@ -4,6 +4,8 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { useTheme } from "@/lib/theme/ThemeProvider";
+import { cssVar } from "@/lib/theme/cssVar";
 import HeroSVGBackground from "./HeroSVGBackground";
 import { ArrowRight, Sparkles, Activity, Cpu, GitBranch } from "lucide-react";
 import { useDict } from "@/lib/i18n/LocaleProvider";
@@ -12,6 +14,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function HeroReveal() {
   const t = useDict();
+  const { theme } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const elementsRef = useRef<HTMLDivElement[]>([]);
@@ -78,7 +81,7 @@ export default function HeroReveal() {
         tl.to(
           dashboardRef.current,
           {
-            boxShadow: "0 30px 80px -20px rgba(0, 255, 204, 0.25), 0 0 0 1px rgba(0, 255, 204, 0.15)",
+            boxShadow: cssVar("--shadow-panel"),
             duration: 1 * speed,
           },
           at + 0.4 * speed
@@ -204,7 +207,7 @@ export default function HeroReveal() {
         containerRef.current?.removeEventListener("mouseleave", onLeave);
       };
     },
-    { scope: containerRef }
+    { scope: containerRef, dependencies: [theme], revertOnUpdate: true }
   );
 
   const addToElementsRef = (el: HTMLDivElement | null) => {
@@ -216,13 +219,13 @@ export default function HeroReveal() {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen lg:h-screen w-full flex items-center justify-center overflow-hidden bg-brand-deep grain py-28 lg:py-0"
+      className="relative min-h-screen lg:h-screen w-full flex items-center justify-center overflow-hidden bg-surface grain py-28 lg:py-0"
     >
-      {/* Programmatic SVG background — dimmed so it supports, never competes */}
-      <div className="absolute inset-0 z-0 opacity-45">
+      {/* Programmatic SVG background — dimmed per theme so it supports, never competes */}
+      <div className="absolute inset-0 z-0 opacity-[var(--hero-bg-opacity)]">
         <HeroSVGBackground />
       </div>
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_transparent_30%,_#060210_100%)] pointer-events-none" />
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_transparent_30%,_var(--surface)_100%)] pointer-events-none" />
 
       {/* Foreground content */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -235,7 +238,7 @@ export default function HeroReveal() {
                 className="relative w-full max-w-md h-[480px] md:h-[560px] rounded-[2.5rem] glass p-6 flex flex-col gap-4 overflow-hidden"
               >
                 {/* Sheen layer */}
-                <div className="hero-sheen absolute inset-y-[-40%] left-0 w-1/3 rotate-[18deg] bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none z-20" />
+                <div className="hero-sheen absolute inset-y-[-40%] left-0 w-1/3 rotate-[18deg] bg-gradient-to-r from-transparent via-veil-strong to-transparent pointer-events-none z-20" />
 
                 {/* Top bar: identity + live status */}
                 <div
@@ -243,17 +246,17 @@ export default function HeroReveal() {
                   className="w-full h-20 rounded-2xl glass-teal px-5 flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-brand-teal/40 flex items-center justify-center shadow-[0_0_18px_rgba(0,255,204,0.4)]">
-                      <Sparkles className="w-5 h-5 text-brand-glow" />
+                    <div className="w-10 h-10 rounded-full bg-accent/40 flex items-center justify-center shadow-[var(--glow-node)]">
+                      <Sparkles className="w-5 h-5 text-glow" />
                     </div>
                     <div className="space-y-1.5">
-                      <div className="w-24 h-3 bg-white/25 rounded-full" />
-                      <div className="w-16 h-2 bg-white/10 rounded-full" />
+                      <div className="w-24 h-3 bg-ink/25 rounded-full" />
+                      <div className="w-16 h-2 bg-veil-strong rounded-full" />
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-brand-glow/30 bg-brand-glow/5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-brand-glow animate-pulse" />
-                    <span className="text-[10px] font-mono tracking-widest text-brand-glow/90">{t.hero.dash.live}</span>
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-glow/30 bg-glow/5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-glow animate-pulse" />
+                    <span className="text-[10px] font-mono tracking-widest text-readout-em">{t.hero.dash.live}</span>
                   </div>
                 </div>
 
@@ -261,23 +264,23 @@ export default function HeroReveal() {
                 <div className="flex gap-4">
                   <div ref={addToElementsRef} className="flex-1 rounded-2xl glass p-4">
                     <div className="flex items-center gap-2 mb-2">
-                      <Activity className="w-3.5 h-3.5 text-brand-mint" />
-                      <span className="text-[10px] font-mono uppercase tracking-widest text-gray-400">
+                      <Activity className="w-3.5 h-3.5 text-accent-strong" />
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-ink-muted">
                         {t.hero.dash.efficiency}
                       </span>
                     </div>
-                    <span ref={kpiEffRef} className="text-3xl font-bold text-white tabular-nums">
+                    <span ref={kpiEffRef} className="text-3xl font-bold text-ink tabular-nums">
                       +0%
                     </span>
                   </div>
                   <div ref={addToElementsRef} className="flex-1 rounded-2xl glass p-4">
                     <div className="flex items-center gap-2 mb-2">
-                      <Cpu className="w-3.5 h-3.5 text-brand-mint" />
-                      <span className="text-[10px] font-mono uppercase tracking-widest text-gray-400">
+                      <Cpu className="w-3.5 h-3.5 text-accent-strong" />
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-ink-muted">
                         {t.hero.dash.response}
                       </span>
                     </div>
-                    <span ref={kpiLatRef} className="text-3xl font-bold text-white tabular-nums">
+                    <span ref={kpiLatRef} className="text-3xl font-bold text-ink tabular-nums">
                       0.0s
                     </span>
                   </div>
@@ -286,20 +289,20 @@ export default function HeroReveal() {
                 {/* Live chart */}
                 <div ref={addToElementsRef} className="w-full rounded-2xl glass p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-gray-400">
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-ink-muted">
                       {t.hero.dash.performance}
                     </span>
-                    <span className="text-[10px] font-mono text-brand-glow/70">{t.hero.dash.window}</span>
+                    <span className="text-[10px] font-mono text-readout">{t.hero.dash.window}</span>
                   </div>
                   <svg viewBox="0 0 300 110" className="w-full h-24" fill="none">
                     <defs>
                       <linearGradient id="hero-chart-fill" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#00ffcc" stopOpacity="0.25" />
-                        <stop offset="100%" stopColor="#00ffcc" stopOpacity="0" />
+                        <stop offset="0%" stopColor="var(--glow)" stopOpacity="0.25" />
+                        <stop offset="100%" stopColor="var(--glow)" stopOpacity="0" />
                       </linearGradient>
                     </defs>
                     {[22, 44, 66, 88].map((y) => (
-                      <line key={y} x1="0" y1={y} x2="300" y2={y} stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+                      <line key={y} x1="0" y1={y} x2="300" y2={y} stroke="var(--line-soft)" strokeWidth="1" />
                     ))}
                     <path
                       ref={chartAreaRef}
@@ -309,10 +312,10 @@ export default function HeroReveal() {
                     <path
                       ref={chartPathRef}
                       d="M 0 88 C 30 82, 50 70, 80 72 C 110 74, 130 52, 160 48 C 190 44, 210 56, 240 38 C 265 27, 285 20, 300 14"
-                      stroke="#00ffcc"
+                      stroke="var(--glow)"
                       strokeWidth="2"
                       strokeLinecap="round"
-                      className="drop-shadow-[0_0_6px_rgba(0,255,204,0.6)]"
+                      className="drop-shadow-[var(--drop-glow)]"
                     />
                   </svg>
                 </div>
@@ -326,12 +329,12 @@ export default function HeroReveal() {
                   ].map(({ icon: Icon, label, state }) => (
                     <div key={label} className="agent-row flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-7 h-7 rounded-lg bg-brand-teal/15 border border-brand-teal/25 flex items-center justify-center">
-                          <Icon className="w-3.5 h-3.5 text-brand-mint" />
+                        <div className="w-7 h-7 rounded-lg bg-accent/15 border border-accent/25 flex items-center justify-center">
+                          <Icon className="w-3.5 h-3.5 text-accent-strong" />
                         </div>
-                        <span className="text-xs text-gray-300">{label}</span>
+                        <span className="text-xs text-ink-muted">{label}</span>
                       </div>
-                      <span className="text-[10px] font-mono text-brand-glow/70">{state}</span>
+                      <span className="text-[10px] font-mono text-readout">{state}</span>
                     </div>
                   ))}
                 </div>
@@ -342,19 +345,19 @@ export default function HeroReveal() {
 
         {/* Right: headline */}
         <div ref={titleRef} className="text-left max-w-2xl order-1 lg:order-2">
-          <div className="hero-eyebrow inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-teal/30 bg-brand-teal/5 backdrop-blur-sm mb-8">
-            <Sparkles className="w-3.5 h-3.5 text-brand-glow" />
-            <span className="text-xs font-mono uppercase tracking-[0.2em] text-brand-mint">
+          <div className="hero-eyebrow inline-flex items-center gap-2 px-4 py-2 rounded-full border border-accent/30 bg-accent/5 backdrop-blur-sm mb-8">
+            <Sparkles className="w-3.5 h-3.5 text-glow" />
+            <span className="text-xs font-mono uppercase tracking-[0.2em] text-accent-strong">
               {t.hero.eyebrow}
             </span>
           </div>
 
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white mb-6 leading-[1.05]">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-ink mb-6 leading-[1.05]">
             {t.hero.headlineWords.map((word, i) => (
               <span key={i} className="inline-block overflow-hidden align-bottom pb-1 mr-[0.28em]">
                 <span
                   className={`hero-word inline-block ${
-                    i === t.hero.highlightIndex ? "text-transparent bg-clip-text bg-gradient-to-r from-brand-glow to-brand-teal" : ""
+                    i === t.hero.highlightIndex ? "text-transparent bg-clip-text bg-gradient-to-r from-glow to-accent" : ""
                   }`}
                 >
                   {word}
@@ -363,21 +366,21 @@ export default function HeroReveal() {
             ))}
           </h1>
 
-          <p className="hero-sub text-lg md:text-xl text-gray-400 font-light leading-relaxed mb-10">
+          <p className="hero-sub text-lg md:text-xl text-ink-muted font-light leading-relaxed mb-10">
             {t.hero.sub}
           </p>
 
           <div className="flex flex-wrap items-center gap-4">
             <a
               href="#contact"
-              className="hero-cta group inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-brand-teal text-white font-medium transition-all duration-300 hover:bg-brand-mint hover:shadow-[0_0_35px_rgba(0,255,204,0.35)]"
+              className="hero-cta group inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-accent text-on-accent font-medium transition-all duration-300 hover:bg-accent-strong hover:shadow-[var(--shadow-accent-lg)]"
             >
               {t.hero.ctaDemo}
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
             </a>
             <a
               href="#capabilities"
-              className="hero-cta inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-white/15 text-gray-300 font-medium backdrop-blur-sm transition-all duration-300 hover:border-brand-glow/40 hover:text-white"
+              className="hero-cta inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-line-strong text-ink-muted font-medium backdrop-blur-sm transition-all duration-300 hover:border-glow/40 hover:text-ink"
             >
               {t.hero.ctaExplore}
             </a>
@@ -390,10 +393,10 @@ export default function HeroReveal() {
         ref={scrollCueRef}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3"
       >
-        <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-gray-500">{t.hero.scroll}</span>
-        <div className="w-px h-12 bg-white/10 relative overflow-hidden">
+        <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-ink-subtle">{t.hero.scroll}</span>
+        <div className="w-px h-12 bg-veil-strong relative overflow-hidden">
           <div
-            className="absolute inset-0 bg-gradient-to-b from-brand-glow to-brand-teal"
+            className="absolute inset-0 bg-gradient-to-b from-glow to-accent"
             style={{ animation: "scroll-cue 2.2s ease-in-out infinite" }}
           />
         </div>

@@ -1,11 +1,65 @@
 @import "tailwindcss";
 
+/*
+ * ============================================================================
+ *  Theme tokens
+ * ============================================================================
+ *  Two themes: `light` (default) and `night`. The active one is stamped on
+ *  <html> as `data-theme` by the root layout, resolved server-side from a
+ *  cookie — the page is already dynamic (locale reads cookies/headers), so
+ *  there is no flash and no inline bootstrap script.
+ *
+ *  Components must consume the SEMANTIC tokens below (surface / ink / accent /
+ *  line / veil / figure), never the raw `brand-*` scale. The brand scale is
+ *  kept for fixed marks that are identical in both themes.
+ * ============================================================================
+ */
+
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
 
-  /* Brand palette — derived from the Imbas isotipo */
+  /* Backgrounds, back to front */
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+
+  /* Text, most to least prominent */
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-subtle: var(--ink-subtle);
+  --color-ink-faint: var(--ink-faint);
+
+  /* Brand accent, contrast-corrected per theme */
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --color-glow: var(--glow);
+
+  /* Hairlines and translucent overlays (already carry alpha — no /modifier) */
+  --color-line-soft: var(--line-soft);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-veil: var(--veil);
+  --color-veil-strong: var(--veil-strong);
+
+  /* Illustration/diagram strokes */
+  --color-figure-line: var(--figure-line);
+  --color-figure-line-soft: var(--figure-line-soft);
+  --color-figure-alt: var(--figure-alt);
+  --color-figure-alt-strong: var(--figure-alt-strong);
+  --color-figure-node: var(--figure-node);
+
+  /* Mono readout labels in the mock dashboard / diagrams. Alpha is baked into
+     the token: night keeps the translucent neon, light needs an opaque ink —
+     10px type at 70% alpha cannot reach AA on paper. */
+  --color-readout: var(--readout);
+  --color-readout-em: var(--readout-em);
+  --color-readout-badge: var(--readout-badge);
+  --color-readout-dim: var(--readout-dim);
+  --color-readout-caption: var(--readout-caption);
+
+  /* Fixed brand palette — derived from the Imbas isotipo. Theme-invariant. */
   --color-brand-teal: #00988b;
   --color-brand-mint: #2fbfae;
   --color-brand-glow: #00ffcc;
@@ -17,49 +71,222 @@
   --color-brand-light: #f4f6f8;
 }
 
+/* ---------------------------------------------------------------- light --- */
+/* Default. Paper rather than stark white, tinted toward the logo's aubergine
+   so the teal reads as pigment instead of screen glare. */
 :root {
-  --background: var(--color-brand-deep);
-  --foreground: var(--color-brand-light);
+  color-scheme: light;
+
+  --surface: #faf9fb;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f1eef6;
+
+  --ink: #1a1020;
+  --ink-muted: #4b3e57;
+  --ink-subtle: #6d6079;
+  --ink-faint: #948a9d;
+
+  /* #00988b only reaches 3.6:1 on paper — too low for body copy, so the
+     interactive accent is darkened and the bright teal becomes decorative. */
+  --accent: #00736a;
+  --accent-strong: #005c53;
+  --accent-soft: rgba(0, 152, 139, 0.1);
+  --on-accent: #ffffff;
+  --glow: #00988b;
+
+  --line-soft: rgba(26, 16, 32, 0.06);
+  --line: rgba(26, 16, 32, 0.1);
+  --line-strong: rgba(26, 16, 32, 0.2);
+  --veil: rgba(26, 16, 32, 0.04);
+  --veil-strong: rgba(26, 16, 32, 0.08);
+
+  --figure-line: #007a6e;
+  --figure-line-soft: #4aa79b;
+  --figure-alt: #6b5a86;
+  --figure-alt-strong: #4e3f66;
+  --figure-node: #00786c;
+
+  /* Frosted white over paper; depth comes from a cast shadow, not emission. */
+  --glass-bg: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(255, 255, 255, 0.66) 40%,
+    rgba(0, 152, 139, 0.06) 100%
+  );
+  --glass-border: rgba(26, 16, 32, 0.09);
+  --glass-inset: rgba(255, 255, 255, 0.9);
+  --glass-shadow: 0 24px 48px -24px rgba(45, 24, 56, 0.28),
+    0 2px 6px -3px rgba(45, 24, 56, 0.12);
+
+  --glass-teal-bg: linear-gradient(
+    135deg,
+    rgba(0, 152, 139, 0.14) 0%,
+    rgba(0, 152, 139, 0.06) 60%,
+    rgba(255, 255, 255, 0.72) 100%
+  );
+  --glass-teal-border: rgba(0, 122, 110, 0.24);
+  --glass-teal-inset: rgba(255, 255, 255, 0.75);
+
+  --sheen-gradient: linear-gradient(
+    100deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.55) 48%,
+    rgba(0, 152, 139, 0.12) 50%,
+    rgba(255, 255, 255, 0.55) 52%,
+    transparent 58%
+  );
+
+  /* Overlay-blend grain lightens; on paper it has to subtract instead. */
+  --grain-opacity: 0.05;
+  --grain-blend: multiply;
+
+  /* Selection/hover emphasis. Night emits light; paper casts a shadow. */
+  --shadow-accent: 0 8px 20px -8px rgba(0, 122, 110, 0.4);
+  --shadow-accent-lg: 0 14px 34px -12px rgba(0, 122, 110, 0.45);
+  --shadow-veil: 0 6px 18px -8px rgba(45, 24, 56, 0.18);
+  /* Active dot on the philosophy progress rail (read by GSAP). */
+  --rail-dot-glow: 0 0 0 4px rgba(0, 122, 110, 0.16);
+  /* Idle ring of the custom cursor. */
+  --cursor-ring: rgba(26, 16, 32, 0.45);
+
+  /* Decorative glow language. Night emits; paper casts and tints. */
+  --shadow-panel: 0 30px 80px -28px rgba(45, 24, 56, 0.3),
+    0 0 0 1px rgba(0, 122, 110, 0.14);
+  --glow-node: 0 6px 16px -6px rgba(0, 122, 110, 0.4);
+  --glow-node-strong: 0 10px 26px -8px rgba(0, 122, 110, 0.5);
+  --glow-bar: 0 6px 14px -6px rgba(0, 122, 110, 0.35);
+  --drop-glow: 0 1px 2px rgba(0, 122, 110, 0.45);
+  --wash-accent: rgba(0, 152, 139, 0.07);
+  --wash-deep: rgba(107, 90, 134, 0.1);
+  --figure-tick: rgba(0, 122, 110, 0.5);
+  --figure-dock: rgba(0, 122, 110, 0.45);
+  /* Ink on paper has no headroom to be dimmed — the light hero runs at full
+     strength, while night's emission is held back so it never competes. */
+  --hero-bg-opacity: 1;
+  --readout: #046b62;
+  --readout-em: #02564f;
+  --readout-badge: #046b62;
+  --readout-dim: #5b6f6c;
+  --readout-caption: #2f5f59;
+
   --ease-premium: cubic-bezier(0.65, 0.05, 0, 1);
 }
 
-body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), sans-serif;
-  overflow-x: hidden;
-  overscroll-behavior: none;
-}
+/* ---------------------------------------------------------------- night --- */
+/* The original composition, unchanged. */
+:root[data-theme="night"] {
+  color-scheme: dark;
 
-/* ===== Liquid glass surfaces ===== */
-@utility glass {
-  background: linear-gradient(
+  --surface: #060210;
+  --surface-raised: #120917;
+  --surface-sunken: #0a050d;
+
+  --ink: #f4f6f8;
+  --ink-muted: #9ca3af;
+  /* Was gray-500 (#6b7280), which only reached 3.7:1 on the card surfaces.
+     Nudged up between gray-500 and gray-400 to clear AA while staying a
+     clear step below --ink-muted. */
+  --ink-subtle: #848d9c;
+  --ink-faint: #4b5563;
+
+  --accent: #00988b;
+  --accent-strong: #2fbfae;
+  --accent-soft: rgba(0, 152, 139, 0.2);
+  --on-accent: #ffffff;
+  --glow: #00ffcc;
+
+  --line-soft: rgba(255, 255, 255, 0.06);
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.18);
+  --veil: rgba(255, 255, 255, 0.05);
+  --veil-strong: rgba(255, 255, 255, 0.1);
+
+  --figure-line: #00988b;
+  --figure-line-soft: #2fbfae;
+  --figure-alt: #b9a7d6;
+  --figure-alt-strong: #7d6a9e;
+  --figure-node: #00ffcc;
+
+  --glass-bg: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.08) 0%,
     rgba(255, 255, 255, 0.03) 40%,
     rgba(0, 152, 139, 0.04) 100%
   );
-  backdrop-filter: blur(18px) saturate(1.4);
-  -webkit-backdrop-filter: blur(18px) saturate(1.4);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    0 20px 50px -20px rgba(0, 0, 0, 0.6);
-}
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-inset: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.6);
 
-@utility glass-teal {
-  background: linear-gradient(
+  --glass-teal-bg: linear-gradient(
     135deg,
     rgba(0, 152, 139, 0.16) 0%,
     rgba(0, 152, 139, 0.05) 60%,
     rgba(0, 255, 204, 0.04) 100%
   );
+  --glass-teal-border: rgba(0, 255, 204, 0.22);
+  --glass-teal-inset: rgba(0, 255, 204, 0.15);
+
+  --sheen-gradient: linear-gradient(
+    100deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.07) 48%,
+    rgba(0, 255, 204, 0.1) 50%,
+    rgba(255, 255, 255, 0.07) 52%,
+    transparent 58%
+  );
+
+  --grain-opacity: 0.035;
+  --grain-blend: overlay;
+
+  --shadow-accent: 0 0 15px rgba(0, 152, 139, 0.3);
+  --shadow-accent-lg: 0 0 35px rgba(0, 255, 204, 0.35);
+  --shadow-veil: 0 0 15px rgba(255, 255, 255, 0.05);
+  --rail-dot-glow: 0 0 12px rgba(0, 255, 204, 0.8);
+  --cursor-ring: rgba(255, 255, 255, 0.5);
+
+  --shadow-panel: 0 30px 80px -20px rgba(0, 255, 204, 0.25),
+    0 0 0 1px rgba(0, 255, 204, 0.15);
+  --glow-node: 0 0 18px rgba(0, 255, 204, 0.4);
+  --glow-node-strong: 0 0 36px rgba(0, 255, 204, 0.5);
+  --glow-bar: 0 0 14px rgba(0, 255, 204, 0.25);
+  --drop-glow: 0 0 6px rgba(0, 255, 204, 0.6);
+  --wash-accent: rgba(0, 152, 139, 0.06);
+  --wash-deep: rgba(45, 24, 56, 0.35);
+  --figure-tick: rgba(0, 152, 139, 0.55);
+  --figure-dock: rgba(0, 255, 204, 0.35);
+  --hero-bg-opacity: 0.45;
+  --readout: rgba(0, 255, 204, 0.7);
+  --readout-em: rgba(0, 255, 204, 0.9);
+  --readout-badge: rgba(0, 255, 204, 0.8);
+  --readout-dim: rgba(0, 152, 139, 0.6);
+  --readout-caption: rgba(47, 191, 174, 0.7);
+}
+
+body {
+  background-color: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-sans), sans-serif;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+  transition: background-color 0.45s var(--ease-premium),
+    color 0.45s var(--ease-premium);
+}
+
+/* ===== Liquid glass surfaces ===== */
+@utility glass {
+  background: var(--glass-bg);
   backdrop-filter: blur(18px) saturate(1.4);
   -webkit-backdrop-filter: blur(18px) saturate(1.4);
-  border: 1px solid rgba(0, 255, 204, 0.22);
-  box-shadow:
-    inset 0 1px 0 rgba(0, 255, 204, 0.15),
-    0 20px 50px -20px rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-inset), var(--glass-shadow);
+}
+
+@utility glass-teal {
+  background: var(--glass-teal-bg);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border: 1px solid var(--glass-teal-border);
+  box-shadow: inset 0 1px 0 var(--glass-teal-inset), var(--glass-shadow);
 }
 
 /* Fine grain to kill banding on large glows */
@@ -71,9 +298,9 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.035;
+  opacity: var(--grain-opacity);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
-  mix-blend-mode: overlay;
+  mix-blend-mode: var(--grain-blend);
 }
 
 /* Sheen sweep used on glass panels */
@@ -86,14 +313,7 @@ body {
   position: absolute;
   inset: -150% -60%;
   transform: translateX(-70%) rotate(20deg);
-  background: linear-gradient(
-    100deg,
-    transparent 42%,
-    rgba(255, 255, 255, 0.07) 48%,
-    rgba(0, 255, 204, 0.1) 50%,
-    rgba(255, 255, 255, 0.07) 52%,
-    transparent 58%
-  );
+  background: var(--sheen-gradient);
   pointer-events: none;
 }
 
@@ -109,12 +329,12 @@ body {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-brand-deep);
+  background: var(--surface);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-brand-purple);
+  background: var(--line-strong);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-brand-teal);
+  background: var(--accent);
 }
